@@ -25,8 +25,9 @@ const useStyles = makeStyles((theme) => ({
     padding:'16px', 
     display:'flex',
     flexDirection:'column',
-    alignItems:'left', 
+    alignItems:'center', 
     justifyContent:'center',
+    justifyItems: 'center',
     [theme.breakpoints.up("sm")]: {
       alignItems:'center', 
     },
@@ -64,7 +65,6 @@ function SubscribeUS(props) {
         Math.floor(Math.random() * randomChars.length)
       );
     }
-
     return result;
   }
   const Validation = (e) => {
@@ -128,8 +128,8 @@ function SubscribeUS(props) {
 
   function SubscriberUser(){
     return(
-      <Grid container spacing={3} xs={12} sm={6} md={6} lg={6} >
-         <Grid item xs={12} sm={6} md={6} xl={6}>
+      <Grid container spacing={3} justify="center">
+         <Grid item >
            You are already subscribed with us.
          </Grid>
       </Grid>
@@ -153,7 +153,7 @@ function SubscribeUS(props) {
           {filter(props.subscribedUser,{'Email': props.profile.email}).length ? (
             <SubscriberUser />
           ):(
-            <Grid container spacing={3} xs={12} sm={6} md={6} lg={6} >
+            <Grid container spacing={3} justify="center">
             <Grid item xs={12} sm={6} md={6} xl={6}>
               <TextField
                 margin="dense"
@@ -206,7 +206,7 @@ function SubscribeUS(props) {
                   />
                 </Grid>
             )}
-            <Grid item xs={12} sm={12} md={12} xl={12} justify="flex-end">
+            <Grid item xs={12} sm={12} md={12} xl={12}>
             <DialogActions>
           <Progress
             variant="outlined"

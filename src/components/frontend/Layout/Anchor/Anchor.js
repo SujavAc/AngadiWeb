@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme) => ({
     position: 'fixed',
     bottom: 10,
     right: 10,
+    zIndex: 0
   },
 }));
 
@@ -93,7 +94,7 @@ function BackToTop({props,children,id}) {
           {children}
         
       <ScrollTop {...props} id={id} >
-        <Fab  variant="round" color="primary" size="medium" aria-label="scroll back to top">
+        <Fab variant="round" color="primary" size="medium" aria-label="scroll back to top">
           <ArrowUpwardIcon />
         </Fab>
       </ScrollTop>

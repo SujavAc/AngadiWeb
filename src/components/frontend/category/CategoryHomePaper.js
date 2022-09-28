@@ -3,6 +3,7 @@ import { Paper } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { Link } from "react-router-dom";
 import Skeleton from "@material-ui/lab/Skeleton";
+import AnimatedImage from "../../common/Elements/Image/Image";
 
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
@@ -22,8 +23,9 @@ const useStyles = makeStyles((theme) => ({
     height: 250,
   },
   paperTitle: {
-    height: "52px",
+    // height: "52px",
     display: "inline-block",
+    padding: theme.spacing(2),
     fontSize: "1.2rem",
     fontWeight: 600,
     [theme.breakpoints.down("md")]: {
@@ -48,14 +50,12 @@ function CategoryHomePaper({ title, url, categoryId }) {
         {!imgLoaded && (
           <Skeleton animation="wave" variant="rect" width="100%" height={200} />
         )}
-        <img
+        <AnimatedImage 
           className={classes.paperImg}
-          src={url}
+          imageUrl={url}
           alt={title}
-          width="100%"
-          height= "100%"
           onLoad={() => setLoaded(true)}
-        />
+          />
         <span className={classes.paperTitle}>{title}</span>
       </Paper>
     </Link>

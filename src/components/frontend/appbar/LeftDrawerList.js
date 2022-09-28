@@ -29,22 +29,22 @@ const itemList1 = [
   },
   {
     name: "Shop by Category",
-    link: "/categories",
+    link: "../categories",
   },
   {
     name: "All Offers",
-    link: "/deals",
+    link: "../deals",
   },
 ];
 
 const itemList2 = [
   {
     name: "My Account",
-    link: "/account",
+    link: "../account",
   },
   {
     name: "About us",
-    link: "/aboutus",
+    link: "../aboutus",
   },
 ];
 
@@ -123,7 +123,7 @@ function LeftDrawerList(props) {
       {authenticate  && props.profile.isAdmin && (
         <ListItem
           component={Link}
-          to="./dashboard"
+          to="../dashboard"
           button
           disabled={
             authenticate ? false : true
@@ -135,7 +135,7 @@ function LeftDrawerList(props) {
       
         <ListItem
           component={Link}
-          to="./notifications"
+          to="../notifications"
           button
           disabled={
             props.auth.uid ? false : true

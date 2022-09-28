@@ -467,6 +467,9 @@ const mapDispatchToProps = (dispatch) => {
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),
   firestoreConnect((props) => {
+    if(!props.match.params.productId){
+      return
+    }
     return [
       {
         collection: "products",

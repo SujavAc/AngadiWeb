@@ -10,6 +10,7 @@ import SubscribeUS from "../Subscribe/Subscribe";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
+import BackToTop from "../Layout/Anchor/Anchor";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,6 +30,7 @@ function Home(props) {
 
   return (
     <Layout title='A-Tech > Home' content="Find the products you are looking for!!">
+      {/* <BackToTop id="#home"> */}
       <div className={classes.root}>
         <ScrollToTop />
         <RMCarousel />
@@ -45,6 +47,7 @@ function Home(props) {
             }
           />
         </div>
+        {/* </BackToTop> */}
     </Layout>
   );
 }

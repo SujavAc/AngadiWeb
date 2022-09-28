@@ -8,12 +8,10 @@ import AppBar from "../appbar/AppBar";
 import { startAnalytics } from "../../../config/firebaseConfig";
 
 const useStyles = makeStyles((theme) => ({
-    // root: {
-    //   paddingTop: theme.spacing(15),
-    //   [theme.breakpoints.down("lg")]: {
-    //     paddingTop: theme.spacing(8.75),
-    //   },
-    // },
+    root: {
+        position: 'relative',
+        zIndex: -1,
+    },
 }));
 
 export default function Layout({ title, content, richSnippets, images, quote, hastag, children, color }){
@@ -32,7 +30,7 @@ export default function Layout({ title, content, richSnippets, images, quote, ha
         <React.Fragment>
             <div className={classes.root}>
                 <DocumentHead title={title} content={content} richSnippets={richSnippets} images={images} quotes={quote} hashtags={hastag} color={color}/>
-                {children}
+                    {children}
             </div>
         </React.Fragment>
     );
