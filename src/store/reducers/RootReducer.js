@@ -9,6 +9,10 @@ import searchReducer from "./searchReducer";
 import { combineReducers } from "redux";
 import { firestoreReducer } from "redux-firestore";
 import { firebaseReducer } from "react-redux-firebase";
+import orderReducer from "./orderReducer";
+import snackbarReducer from "./snackBarReducer";
+import generalReducer from "./generalReducer";
+import favReducer from "./favReducer";
 
 const rootReducer = combineReducers({
   product: productReducer,
@@ -20,7 +24,11 @@ const rootReducer = combineReducers({
   location: locationReducer,
   auth: authReducer,
   payment: paymentReducer,
+  snackbar: snackbarReducer,
+  general: generalReducer,
+  favourite: favReducer,
   search: searchReducer,
+  order: orderReducer,
 });
 
 export default rootReducer;

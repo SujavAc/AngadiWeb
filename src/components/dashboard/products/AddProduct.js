@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 function AddProduct() {
   const classes = useStyles();
   return (
-    <div className={classes.divAlign}>
+    <div>
       <PageHeader
         title={"Add Product"}
         icon={<AddBox fontSize="large" />}

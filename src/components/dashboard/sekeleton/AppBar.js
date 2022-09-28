@@ -9,6 +9,7 @@ import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import MenuIcon from "@material-ui/icons/Menu";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -79,7 +80,7 @@ function TopAppBar({ Pprops, auth, profile }) {
       <AppBar position="fixed" className={classes.appBar} elevation={1}>
         <Toolbar>
           <IconButton
-            color="inherit"
+            color="primary"
             aria-label="open drawer"
             edge="start"
             onClick={handleDrawerToggle}
@@ -98,11 +99,15 @@ function TopAppBar({ Pprops, auth, profile }) {
               flexItem={true}
               light={true}
             />
+            <Link to="../">
             <img
               src={logo}
-              alt={"Suryakantham Sahaajahaara"}
+              alt={"A-tech-logo"}
               className={classes.brandImg}
+              width= "200"
+              height= "200"
             />
+            </Link>
           </div>
         </Toolbar>
       </AppBar>

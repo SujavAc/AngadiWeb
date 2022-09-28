@@ -10,8 +10,12 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
-
+import GlobalDialog from "../../common/Global Dialog/slide-dialog";
+import ForgetPasswordForm from "../Form/forgetPasswordForm";
+import { signInWithGoogle } from "../../../store/actions/authActions";
 import { connect } from "react-redux";
+// import firebase from "firebase";
+// import { googleAuthProvider } from "../../../config/firebaseConfig";
 
 import {
   signIn,
@@ -19,6 +23,8 @@ import {
   resetAuthErr,
 } from "../../../store/actions/authActions";
 import { configs } from "../../../config/configs";
+import Layout from "../Layout/Layout";
+import SignInWithGoogle from "./SignInWGoogle";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -144,85 +150,93 @@ function SignIn(props) {
   if (props.auth.uid) return <Redirect to="/" />;
 
   return (
-    <div className={classes.root}>
-      <Grid className={classes.grid} container justify="center">
-        <Grid item>
-          <div className={classes.siginRoot}>
-            <div className={classes.imageDiv}>
-              <img
-                className={classes.logo}
-                src="/imgs/logo.png"
-                alt={configs.title}
-              />
-            </div>
-            <Divider className={classes.divider} />
-            <div className={classes.head}>Sign In</div>
-            <Form onSubmit={handleSubmit}>
-              <div className={classes.form}>
-                <Controls.Input
-                  name="email"
-                  label="Email Address"
-                  type="email"
-                  value={values.email}
-                  onChange={handleInputChange}
-                  error={errors.email}
-                  className={classes.input}
-                />
-                <Controls.Input
-                  name="password"
-                  label="Password"
-                  type="password"
-                  value={values.password}
-                  onChange={handleInputChange}
-                  error={errors.password}
-                  className={classes.input}
-                />
-                <Controls.Button
-                  type="submit"
-                  text="Sign In"
-                  className={classes.btn}
+    <Layout title={"A-tech > Sign In"} content={"Become a member with us to get more benefits while purchasing a products"}>
+      <div className={classes.root}>
+        <Grid className={classes.grid} container justify="center">
+          <Grid item>
+            <div className={classes.siginRoot}>
+              <div className={classes.imageDiv}>
+                <img
+                  className={classes.logo}
+                  src="/imgs/logo.png"
+                  alt={configs.title}
                 />
               </div>
-            </Form>
-
-            <div className={classes.signupDiv}>
-              If you are not registered yet?
-              <Link to="/signup" className={classes.signup}>
-                Sign Up
-              </Link>
+              <Divider className={classes.divider} />
+              <div className={classes.head}>Sign In</div>
+              <Form onSubmit={handleSubmit}>
+                <div className={classes.form}>
+                  <Controls.Input
+                    name="email"
+                    label="Email Address"
+                    type="email"
+                    value={values.email}
+                    onChange={handleInputChange}
+                    error={errors.email}
+                    className={classes.input}
+                  />
+                  <Controls.Input
+                    name="password"
+                    label="Password"
+                    type="password"
+                    value={values.password}
+                    onChange={handleInputChange}
+                    error={errors.password}
+                    className={classes.input}
+                  />
+                  <Controls.Button
+                    type="submit"
+                    text="Sign In"
+                    className={classes.btn}
+                  />
+                  
+                </div>
+              </Form>
+              <div style={{padding: '16px'}}>
+                  <GlobalDialog buttonName={"Reset Password"} actionButton={false} title={"Forget password"}>
+                    <ForgetPasswordForm />
+                  </GlobalDialog>
+              </div>
+              <div className={classes.signupDiv}>
+                If you are not registered yet?
+                <Link to="/signup" className={classes.signup}>
+                  Sign Up
+                </Link>
+              </div>
             </div>
-          </div>
-          <Button
-            className={classes.guestBtn}
-            variant="outlined"
-            color="primary"
-            onClick={handleGuest}
-          >
-            continue as Guest
-          </Button>
+            {/* <SignInWithGoogle /> */}
+            <Button
+              className={classes.guestBtn}
+              variant="outlined"
+              color="primary"
+              onClick={props.signInWithGoogle}
+            >
+              continue using Google Account
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
-      <Dialog
-        open={dOpen.open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {dOpen.msg}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Controls.Button
-            className={classes.btn}
-            text="Cancel"
-            type="cancel"
-            onClick={handleClose}
-          />
-        </DialogActions>
-      </Dialog>
-    </div>
+        <Dialog
+          open={dOpen.open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dOpen.msg}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Controls.Button
+              className={classes.btn}
+              text="Cancel"
+              type="cancel"
+              onClick={handleClose}
+            />
+          </DialogActions>
+        </Dialog>
+      </div>
+    </Layout>
   );
 }
 
@@ -238,6 +252,7 @@ const mapDispatchtoProps = (dispatch) => {
     signIn: (creds) => dispatch(signIn(creds)),
     anonymousSignup: () => dispatch(anonymousSignup()),
     resetAuthErr: () => dispatch(resetAuthErr()),
+    signInWithGoogle: () => dispatch(signInWithGoogle()),
   };
 };
 

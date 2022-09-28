@@ -21,12 +21,11 @@ function CategoryEditDialog(props) {
     setOpen(false);
   };
 
-  const { title, description, callbackUpdate } = props;
-  console.log(title);
-  console.log(description);
+  const { name, description, callbackUpdate } = props;
+
 
   const initialFValues = {
-    title: title ? title : "Category Title",
+    name: name ? name : "Category Title",
     description: description ? description : "Description",
   };
 

@@ -57,7 +57,7 @@ function CategoryTable({
         if (target.value === "") return items;
         else
           return items.filter((x) =>
-            x.title.toLowerCase().includes(target.value.toLowerCase())
+            x.name.toLowerCase().includes(target.value.toLowerCase())
           );
       },
     });
@@ -86,7 +86,7 @@ function CategoryTable({
             var isSelected = item === categorySelected;
             return (
               <TableRow key={idx}>
-                <TableCell>{item.title} </TableCell>
+                <TableCell>{item.name} </TableCell>
                 <TableCell>
                   <IconButton
                     color="primary"

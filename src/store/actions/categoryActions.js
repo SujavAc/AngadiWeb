@@ -6,12 +6,13 @@ export const createCategory = (category) => {
     firestore
       .collection("categories")
       .add({
-        title: category.title,
+        name: category.name,
         description: category.description,
-        imageURL: "",
-        bannerImageURL: "",
+        imageUrl: "",
+        bannerImageUrl: "",
         units: "",
         count: 0,
+        createdAt: Date.now(),
       })
       .then((resp) => {
         fileID = resp.id;
@@ -29,7 +30,7 @@ export const createCategory = (category) => {
         firestore
           .collection("categories")
           .doc(fileID)
-          .update({ imageURL: downloadURL });
+          .update({ imageUrl: downloadURL });
       })
       .then(() => {
         var storageRef = firebase
@@ -46,7 +47,7 @@ export const createCategory = (category) => {
         firestore
           .collection("categories")
           .doc(fileID)
-          .update({ bannerImageURL: downloadURL });
+          .update({ bannerImageUrl: downloadURL });
       })
       .then(() => {
         dispatch({ type: "CREATE_CATEGORY", category });
@@ -63,7 +64,7 @@ export const updateCategoryText = (category) => {
     firestore
       .collection("categories")
       .doc(category.id)
-      .update({ title: category.title, description: category.description })
+      .update({ name: category.title, description: category.description })
       .then(() => {
         dispatch({ type: "UPDATE_CATEGORY_TITLE", category });
       })
@@ -90,7 +91,7 @@ export const updateCategoryImage = (category, imageData) => {
         return firestore
           .collection("categories")
           .doc(category.id)
-          .update({ imageURL: downloadURL });
+          .update({ imageUrl: downloadURL });
       })
       .then(() => {
         dispatch({ type: "UPDATE_CATEGORY_IMAGE", category });
@@ -118,7 +119,7 @@ export const updateCategoryBannerImage = (category, imageData) => {
         return firestore
           .collection("categories")
           .doc(category.id)
-          .update({ bannerImageURL: downloadURL });
+          .update({ bannerImageUrl: downloadURL });
       })
       .then(() => {
         dispatch({ type: "UPDATE_CATEGORY_BANNER_IMAGE", category });
@@ -200,7 +201,7 @@ const deSerializeItems = (units) => {
   citems.forEach((c) => {
     const sc = c.split(";");
     if (sc.length === 2)
-      items.push({ title: sc[0], visibility: sc[1] === "1" });
+      items.push({ name: sc[0], visibility: sc[1] === "1" });
   });
   return items;
 };
@@ -208,7 +209,7 @@ const deSerializeItems = (units) => {
 const serializeItems = (items) => {
   var cart = [];
   items.forEach((item) => {
-    let data = item.title + ";";
+    let data = item.name + ";";
     if (item.visibility) {
       data += "1";
     } else {
@@ -236,9 +237,9 @@ export const addUnitToCategory = (categoryId, unit) => {
       .then((doc) => {
         let data = doc.data();
         let units = deSerializeItems(data.units);
-        let index = units.findIndex((u) => u.title === unit);
+        let index = units.findIndex((u) => u.name === unit);
         if (index < 0) {
-          units.push({ title: unit, visibility: true });
+          units.push({ name: unit, visibility: true });
         }
         return serializeItems(units);
       })
@@ -304,7 +305,7 @@ export const changeVisibility = (visibility, unit, categoryId) => {
       .then((doc) => {
         let data = doc.data();
         let units = deSerializeItems(data.units);
-        let index = units.findIndex((u) => u.title === unit);
+        let index = units.findIndex((u) => u.name === unit);
         units[index].visibility = visibility;
         return firestore
           .collection("categories")

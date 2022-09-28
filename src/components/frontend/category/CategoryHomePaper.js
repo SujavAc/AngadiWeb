@@ -7,7 +7,8 @@ import Skeleton from "@material-ui/lab/Skeleton";
 const useStyles = makeStyles((theme) => ({
   paperRoot: {
     width: 170,
-    padding: theme.spacing(1),
+    height: 300,
+    padding: theme.spacing(3),
     color: theme.palette.primary.main,
     fontWeight: 400,
     textAlign: "center",
@@ -17,7 +18,8 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid rgba(111,114,132,.25)",
   },
   paperImg: {
-    width: 170,
+    width: "100%",
+    height: 250,
   },
   paperTitle: {
     height: "52px",
@@ -29,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
     },
     overflow: "hidden",
     color: "#000000",
+    // position: 'absolute',
+    // bottom: 10,
+    // left: 8,
   },
 }));
 
@@ -41,12 +46,14 @@ function CategoryHomePaper({ title, url, categoryId }) {
     <Link to={"/category/" + categoryId}>
       <Paper elevation={0} className={classes.paperRoot}>
         {!imgLoaded && (
-          <Skeleton animation="wave" variant="rect" width="100%" height={150} />
+          <Skeleton animation="wave" variant="rect" width="100%" height={200} />
         )}
         <img
           className={classes.paperImg}
           src={url}
           alt={title}
+          width="100%"
+          height= "100%"
           onLoad={() => setLoaded(true)}
         />
         <span className={classes.paperTitle}>{title}</span>

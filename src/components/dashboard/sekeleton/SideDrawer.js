@@ -56,7 +56,7 @@ function SideDrawer(props) {
           }}
         >
           <div className={classes.drawerContainer}>
-            <DrawerList {...props} />
+            <DrawerList {...props} disableToggle={false}/>
           </div>
         </Drawer>
       </Hidden>
@@ -69,7 +69,7 @@ function SideDrawer(props) {
           open
         >
           <div className={classes.drawerContainer}>
-            <DrawerList {...props} />
+            <DrawerList {...props} disableToggle={true} />
           </div>
         </Drawer>
       </Hidden>

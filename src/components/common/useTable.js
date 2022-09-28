@@ -11,6 +11,10 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   table: {
+    width:'100%',
+    display:'block',
+    overflowX:'auto',
+    flexWrap: 'wrap',
     marginTop: theme.spacing(3),
     marginBottom: theme.spacing(3),
     "& thead th": {

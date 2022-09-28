@@ -18,7 +18,27 @@ export default function useForm(
     if (validateOnChange) validate({ [name]: value });
   };
 
+  const handleRatingChange = (e) => {
+    const { name, value } = e.target;
+
+    setValues({
+      ...values,
+      [name]: value,
+    });
+    if (validateOnChange) validate({ [name]: value });
+  };
+
   const handleSwitchChange = (e) => {
+    const { name, checked } = e.target;
+
+    setValues({
+      ...values,
+      [name]: checked,
+    });
+    if (validateOnChange) validate({ [name]: checked });
+  };
+
+  const handleCheckboxChange = (e) => {
     const { name, checked } = e.target;
 
     setValues({
@@ -40,6 +60,8 @@ export default function useForm(
     setErrors,
     handleInputChange,
     handleSwitchChange,
+    handleCheckboxChange,
+    handleRatingChange,
     resetForm,
   };
 }

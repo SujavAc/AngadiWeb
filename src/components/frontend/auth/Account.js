@@ -5,13 +5,15 @@ import CartAddress from "../cart/CartAddress";
 import { Redirect, useHistory } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { signOut } from "../../../store/actions/authActions";
-import { cancelOrder } from "../../../store/actions/paymentActions";
+import { signOut,updateUserProfile } from "../../../store/actions/authActions";
+import { cancelOrder, deleteOrder } from "../../../store/actions/paymentActions";
 
 import { compose } from "redux";
 import { firestoreConnect } from "react-redux-firebase";
 
 import OrderCard from "./OrderCard";
+import Layout from "../Layout/Layout";
+import UploadImageButton from "../../common/UploadImageButton";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,9 +22,9 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "100vh",
   },
   userImg: {
-    width: 150,
-    height: 150,
-    paddingTop: 30,
+    width: "100%",
+    height: 250,
+    borderRadius: 20,
   },
   logoutBtn: {
     textAlign: "center",
@@ -44,6 +46,12 @@ function Account(props) {
   const classes = useStyles();
   let history = useHistory();
 
+  const handleUpdateImage = (filesObj, update, userId) => {
+    if (filesObj.length > 0 && update) {
+      props.updateUserProfile(userId, filesObj[0].data);
+    }
+  };
+
   const handleLogout = () => {
     props.signOut();
     history.push("/");
@@ -52,45 +60,60 @@ function Account(props) {
   if (!props.auth.uid) return <Redirect to="/" />;
 
   return (
-    <div className={classes.root}>
-      <Grid container justify="center">
-        <Grid item xs="auto">
-          <img className={classes.userImg} src="/imgs/user.png" />
-        </Grid>
-        <Grid xs={12} item container justify="center">
-          <Grid item xs={"auto"}>
-            <Button
-              onClick={handleLogout}
-              variant="outlined"
-              className={classes.logoutBtn}
-            >
-              Log Out
-            </Button>
+    <Layout title={"A-Tech > User Account"} content={"Account info page where user can manage their information"}>
+      <div className={classes.root}>
+        <Grid container justify="center">
+          <Grid item xs={"auto"} >
+            <img className={classes.userImg} src={props.profile.profileUrl ? props.profile.profileUrl : "/imgs/user.png"} />
+          </Grid>
+          <Grid xs={12} item container justify="center">
+            <Grid item xs={"auto"}>
+            <UploadImageButton 
+            text={"Update Image"}
+            rounded={false}
+            filesLimit={1}
+            callbackSave={(filesObj, update) =>
+              handleUpdateImage(filesObj, update, props.auth.uid)
+            }
+            />
+            </Grid>
+          </Grid>
+          <Grid xs={12} item container justify="center">
+            <Grid item xs={"auto"}>
+              <Button
+                onClick={handleLogout}
+                variant="outlined"
+                className={classes.logoutBtn}
+              >
+                Log Out
+              </Button>
+            </Grid>
+          </Grid>
+          <Grid xs={12} item container justify="center">
+            <Grid item xs={10} lg={6}>
+              <CartAddress profile={props.profile} open={false} />
+            </Grid>
+            <Grid id="orders" item xs={10} lg={8}>
+              <div className={classes.ordersRoot}>
+                <h2>Orders</h2>
+                {props.orders &&
+                  props.orders.map((order, idx) => (
+                    <OrderCard
+                      key={idx}
+                      cancelOrder={(id) => props.cancelOrder(id)}
+                      deleteOrder={(id) => props.deleteOrder(id)}
+                      order={order}
+                    />
+                  ))}
+                {props.orders && props.orders.length === 0 && (
+                  <p>No Previous Orders</p>
+                )}
+              </div>
+            </Grid>
           </Grid>
         </Grid>
-        <Grid xs={12} item container justify="center">
-          <Grid item xs={10} lg={6}>
-            <CartAddress profile={props.profile} open={false} />
-          </Grid>
-          <Grid id="orders" item xs={10} lg={8}>
-            <div className={classes.ordersRoot}>
-              <h2>Orders</h2>
-              {props.orders &&
-                props.orders.map((order, idx) => (
-                  <OrderCard
-                    key={idx}
-                    cancelOrder={(id) => props.cancelOrder(id)}
-                    order={order}
-                  />
-                ))}
-              {props.orders && props.orders.length === 0 && (
-                <p>No Previous Orders</p>
-              )}
-            </div>
-          </Grid>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 
@@ -98,6 +121,8 @@ const mapDispatchtoProps = (dispatch) => {
   return {
     signOut: () => dispatch(signOut()),
     cancelOrder: (id) => dispatch(cancelOrder(id)),
+    deleteOrder: (id) => dispatch(deleteOrder(id)),
+    updateUserProfile: (userId, ImageData) => dispatch(updateUserProfile(userId, ImageData))
   };
 };
 
@@ -117,9 +142,9 @@ export default compose(
         collection: "orders",
         where: [
           ["user_id", "==", props.auth.uid],
-          ["completed", "==", true],
+          ["completed", "==", false],
         ],
-        orderBy: ["time", "desc"],
+        orderBy: ["createdAt", "desc"],
       },
     ];
   })

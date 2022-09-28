@@ -119,7 +119,7 @@ const calcTPrice = (items) => {
   if (!items && items.length === 0) return 0;
   var res = 0;
   items.forEach((item) => {
-    res += item.quantity * item.totalPrice;
+    res += item.quantity * item.discountPrice;
   });
   return res;
 };
@@ -134,7 +134,7 @@ function CartBox(props) {
           My Cart(<b>{props.cart.length}</b>)
         </Grid>
         <Grid item xs="auto">
-          <b>₹ {calcTPrice(props.cart)}</b>
+          <b>AUD {calcTPrice(props.cart)}</b>
         </Grid>
       </Grid>
       <Divider />
@@ -152,7 +152,7 @@ function CartBox(props) {
 
             <Grid container justify="space-between" alignItems="center">
               <Grid item xs="auto">
-                <b>₹ {product.totalPrice}</b>
+                <b>AUD {product.discountPrice}</b>
               </Grid>
               <Grid item xs="auto">
                 <div className={classes.changeCountDiv}>

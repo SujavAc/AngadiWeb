@@ -16,10 +16,12 @@ import SearchDialog from "./SearchDialog";
 import LeftDrawer from "./LeftDrawer";
 import Divider from "@material-ui/core/Divider";
 import CategoryBar from "./CategoryBar";
-
 import { connect } from "react-redux";
-
+import BigLogo from '../../assets/images/logo/Logo.png';
+import ShortLogo from '../../assets/images/logo/favicon.png';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import { loadCartItems } from "../../../store/actions/cartActions";
+import { Avatar } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,6 +46,17 @@ const useStyles = makeStyles((theme) => ({
       height: "auto",
       width: "100%",
       minWidth: "150px",
+    },
+  },
+  brandSmallImg: {
+    height: "auto",
+    width: "50%",
+    minWidth: "50px",
+    maxWidth: "60px",
+    [theme.breakpoints.down("sm")]: {
+      height: "auto",
+      width: "50%",
+      minWidth: "50px",
     },
   },
   searchInput: {
@@ -91,11 +104,42 @@ function MyAppBar(props) {
 
   useEffect(() => {
     if (props.cart.length === 0) props.loadCartItems();
+    
   }, []);
 
   useEffect(() => {
     if (props.cart.length === 0) props.loadCartItems();
   }, [props.auth]);
+
+  function stringToColor(string) {
+    let hash = 0;
+    let i;
+  
+    /* eslint-disable no-bitwise */
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+  
+    let color = '#';
+  
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.slice(-2);
+    }
+    /* eslint-enable no-bitwise */
+  
+    return color;
+  }
+
+  function stringAvatar(name) {
+    return {
+      sx: {
+        bgcolor: stringToColor(name),
+      },
+      // children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+      children: `${name?.charAt(0)}`,
+    };
+  }
 
   return (
     <div className={classes.root}>
@@ -107,18 +151,29 @@ function MyAppBar(props) {
         <Toolbar>
           <LeftDrawer />
           <Grid container alignItems="center" spacing={2}>
-            <Grid item xs={6} sm={2}>
+            <Grid item xs={2} sm={2}>
+            <Hidden xsDown>
               <Link to="/">
                 <img
-                  src={logo}
-                  alt={"Suryakantham Sahaajahaara"}
+                  src={BigLogo}
+                  alt={"A-tech-big-logo"}
                   className={classes.brandImg}
                 />
               </Link>
+            </Hidden>
+            <Hidden smUp>
+            <Link to="/">
+                <img
+                  src={ShortLogo}
+                  alt={"A-tech-short-logo"}
+                  className={classes.brandSmallImg}
+                />
+              </Link>
+            </Hidden>
             </Grid>
             <Hidden xsDown>
               <Grid item container justify="flex-end" sm={6}>
-                <Grid item xs={10}>
+                <Grid item xs={9}>
                   <Form onSubmit={handleSearch}>
                     <TextField
                       type="search"
@@ -144,29 +199,29 @@ function MyAppBar(props) {
             <Grid
               container
               item
-              xs={6}
+              xs={10}
               sm={4}
               justify="flex-end"
               alignItems="center"
-              spacing={1}
             >
-              <Hidden xsDown>
+              {/* <Hidden xsDown> */}
                 <Grid item>
                   <Link
                     className={classes.link}
                     to={props.auth.uid ? "/account" : "/signin"}
                   >
                     <div className={classes.actionDiv}>
-                      <IconButton aria-label="signin">
-                        <Person className={classes.menuButton} />
+                      <IconButton>
+                        <Avatar className={classes.menuButton} {...stringAvatar(`${props.profile.name ? props.profile.name : "Δ T"}`)}/>
+                        {/* <Person className={classes.menuButton} /> */}
                       </IconButton>
-                      <Hidden smDown>
+                      <Hidden mdDown>
                         <p>{props.auth.uid ? "Account" : "Sign In"} </p>
                       </Hidden>
                     </div>
                   </Link>
                 </Grid>
-              </Hidden>
+              {/* </Hidden> */}
               <Hidden smUp>
                 <Grid item>
                   <SearchDialog
@@ -176,6 +231,30 @@ function MyAppBar(props) {
                   />
                 </Grid>
               </Hidden>
+
+              <Grid item>
+                <Link to={props.auth.uid ? "/fav" : "/signin"} className={classes.link}>
+                  <div className={classes.actionDiv}>
+                  <IconButton aria-label="favourites">
+                      <Badge
+                        badgeContent={props.profile.fav ? props.profile.fav.length : 0}
+                        color="primary"
+                        anchorOrigin={{
+                          vertical: "top",
+                          horizontal: "left",
+                        }}
+                      >
+                        <FavoriteIcon
+                          className={classes.menuButton}
+                        />
+                      </Badge>
+                    </IconButton>
+                    <Hidden mdDown>
+                      <p>My Fav</p>
+                    </Hidden>
+                  </div>
+                </Link>
+              </Grid>
 
               <Grid item>
                 <Link to="/checkout/cart" className={classes.link}>
@@ -197,7 +276,7 @@ function MyAppBar(props) {
                         />
                       </Badge>
                     </IconButton>
-                    <Hidden smDown>
+                    <Hidden mdDown>
                       <p>My Cart</p>
                     </Hidden>
                   </div>
@@ -208,7 +287,9 @@ function MyAppBar(props) {
         </Toolbar>
 
         <Divider color="primary" />
+        <Hidden xsDown>
         <CategoryBar />
+        </Hidden>
       </AppBar>
     </div>
   );
@@ -216,6 +297,7 @@ function MyAppBar(props) {
 
 const mapStateToProps = (state) => {
   return {
+    profile: state.firebase.profile,
     cart: state.cart.items,
     auth: state.firebase.auth,
   };

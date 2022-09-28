@@ -47,7 +47,7 @@ export default function UploadImageButton(props) {
           onClick={() => setOpen(true)}
           className={className ? className : classes.uploadbtnStyles}
         >
-          <Image />
+          <Image /> {text ? text : ""}
         </IconButton>
       )}
       <DropzoneDialogBase

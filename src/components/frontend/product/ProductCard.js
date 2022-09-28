@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
 import { Add, Remove } from "@material-ui/icons";
 import { Link } from "react-router-dom";
-
+import AddToFav from '../../frontend/Favourites/FavouriteIcon';
 import { addItem, removeItem } from "../../../store/actions/cartActions";
 import { connect } from "react-redux";
 import {
@@ -13,11 +13,13 @@ import {
 import Skeleton from "@material-ui/lab/Skeleton";
 import { configs } from "../../../config/configs";
 import { titleToId } from "../../common/utils";
+import Transition from "../../common/Elements/Transition/Transition";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: "#FFFFFF",
+    // backgroundColor: "#FFFFFF",
     width: 170,
+    height: 380,
     padding: theme.spacing(1),
     border: "1px solid rgba(111,114,132,.25)",
     borderRadius: theme.shape.borderRadius,
@@ -26,12 +28,14 @@ const useStyles = makeStyles((theme) => ({
   },
   fullwidthroot: {
     backgroundColor: "#FFFFFF",
+    height: 400,
     width: "100%",
     padding: theme.spacing(1),
     border: "1px solid rgba(111,114,132,.25)",
     borderRadius: theme.shape.borderRadius,
     position: "relative",
     boxSizing: "border-box",
+    overflow: 'hidden',
   },
   addBtn: {
     backgroundColor: theme.palette.primary.main,
@@ -63,21 +67,32 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
     width: "100%",
-    marginBottom: theme.spacing(1),
+    height: 200,
+    padding: theme.spacing(1),
   },
   title: {
     fontSize: "14px",
     fontWeight: "bold",
     color: "#000000",
+    flexWrap: 'wrap',
     marginBottom: theme.spacing(0),
     display: "inline-block",
     height: 41,
     width: "100%",
-    overflow: "hidden",
+    // overflow: "hidden",
+    position: 'absolute',
+    bottom: 50,
+    [theme.breakpoints.down("xs")]: {
+      bottom: 60,
+    },
   },
   priceBox: {
     marginBottom: theme.spacing(1),
-    width: "100%",
+    flexWrap: 'wrap',
+    // width: "100%",
+    position: 'absolute',
+    bottom: 0,
+    // left: 0,
   },
   aprice: {
     fontWeight: "bold",
@@ -88,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: "line-through",
   },
   save: {
-    color: theme.palette.success.main,
+    color: theme.palette.text.primary,
     fontSize: "12px",
     fontWeight: "bold",
     display: "block",
@@ -104,11 +119,17 @@ const useStyles = makeStyles((theme) => ({
     background: "rgba(111,114,132,.25)",
     borderRadius: theme.shape.borderRadius,
   },
+  fav: {
+    padding: "1px 2px 1px 2px",
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
   off: {
     fontSize: "10px",
     fontWeight: "bold",
-    padding: "1px 2px 1px 2px",
-    background: theme.palette.success.main,
+    padding: theme.spacing(1),
+    background: theme.palette.primary.main,
     color: "#FFFFFF",
     position: "absolute",
     top: 0,
@@ -135,6 +156,11 @@ const useStyles = makeStyles((theme) => ({
   },
   change: {
     height: "32px",
+    position: 'absolute',
+    bottom: 100,
+    [theme.breakpoints.down("xs")]: {
+      bottom: 120,
+    },
   },
   count: {
     display: "flex",
@@ -170,6 +196,7 @@ function ProductCard(props) {
   var productData = props.productData;
   var fullwidth = props.fullwidth;
   var titleLimit = props.titleLimit;
+  const cardRef = React.useRef();
   const classes = useStyles();
   const [count, setCount] = useState(0);
   const [imgLoaded, setLoaded] = useState(false);
@@ -202,7 +229,11 @@ function ProductCard(props) {
   }
 
   return (
-    <div className={fullwidth ? classes.fullwidthroot : classes.root}>
+    <Transition transitionType="grow" active={true} timeout={2000} ref={cardRef}>
+    <div className={fullwidth ? classes.fullwidthroot : classes.root} ref={cardRef}>
+    <div className={classes.fav}>
+            <AddToFav productId={productData.id}/>
+          </div>
       <Link to={"/product/" + titleToId(productData.title)}>
         <div className={classes.imgDiv}>
           {!imgLoaded && (
@@ -216,7 +247,8 @@ function ProductCard(props) {
           <div>
             <img
               className={classes.img}
-              src={productData.imageURL}
+              src={productData.imageUrl}
+              alt={productData.title}
               onLoad={() => setLoaded(true)}
             />
           </div>
@@ -228,18 +260,21 @@ function ProductCard(props) {
               off
             </span>
           )}
+          {/* <div className={classes.fav}>
+            <AddToFav productId={productData.id}/>
+          </div> */}
         </div>
         <span className={classes.title}>
           {truncateString(productData.title, titleLimit)}
         </span>
       </Link>
       <div className={classes.priceBox}>
-        <span className={classes.aprice}>{"₹" + productData.totalPrice}</span>
+        <span className={classes.aprice}>{"AUD" + productData.discountPrice}</span>
         <span> </span>
         {productData.discount > 0 && (
           <>
             <span className={classes.dprice}>
-              {"₹" + productData.taxedPrice}
+              {"AUD" + productData.price}
             </span>
             <span> </span>
           </>
@@ -247,11 +282,12 @@ function ProductCard(props) {
         <span className={classes.variant}>{productData.unit}</span>
         {productData.discount > 0 && (
           <span className={classes.save}>
-            save ₹{productData.taxedPrice - productData.totalPrice}
+            save AUD {productData.price - productData.discountPrice}
           </span>
         )}
         {productData.discount === 0 && <div className={classes.nosave}> </div>}
       </div>
+      
       <div className={classes.change}>
         {count < 1 && productData.visibility && (
           <div className={classes.addBtn} onClick={handleAdd}>
@@ -284,6 +320,7 @@ function ProductCard(props) {
         )}
       </div>
     </div>
+    </Transition>
   );
 }
 

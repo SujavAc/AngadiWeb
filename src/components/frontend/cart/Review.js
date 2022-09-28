@@ -13,6 +13,7 @@ import { loadCartItems } from "../../../store/actions/cartActions";
 import { Redirect } from "react-router-dom";
 import ScrollToTop from "../../common/ScrollToTop";
 import Hidden from "@material-ui/core/Hidden";
+import Layout from "../Layout/Layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,8 +65,8 @@ function Review(props) {
   const proceedPayment = (cart, profile) => {
     return (
       cart.length > 0 &&
+      profile.email !== "" &&
       profile.delivery !== "" &&
-      profile.pincode !== "" &&
       profile.pNum !== ""
     );
   };
@@ -77,53 +78,55 @@ function Review(props) {
   if (!props.auth.uid) return <Redirect to="/signin" />;
 
   return (
-    <div className={classes.root}>
-      <ScrollToTop />
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={8}>
-          <span className={classes.cartTitle}>Select Delivery Address </span>
-          <AddressForm profile={props.profile} />
-        </Grid>
-        <Grid item xs={12} lg={4}>
-          <CheckoutStepper activeStep={1} />
-          <PaymentDetails />
-          <div className={classes.proceedBtn}>
-            <Hidden smDown>
+    <Layout title={"A-Tech > Review Order"} content={"Refine your order"}>
+      <div className={classes.root}>
+        <ScrollToTop />
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={8}>
+            <span className={classes.cartTitle}>Select Delivery Address </span>
+            <AddressForm profile={props.profile} />
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <CheckoutStepper activeStep={1} />
+            <PaymentDetails />
+            <div className={classes.proceedBtn}>
+              <Hidden smDown>
+                <Button
+                  component={Link}
+                  to="/checkout/cart"
+                  className={classes.btn}
+                  variant="contained"
+                  color="primary"
+                >
+                  Back
+                </Button>
+              </Hidden>
               <Button
                 component={Link}
-                to="/checkout/cart"
+                to="/checkout/payment"
                 className={classes.btn}
                 variant="contained"
                 color="primary"
+                disabled={!proceed}
               >
-                Back
+                Make Payment
               </Button>
-            </Hidden>
-            <Button
-              component={Link}
-              to="/checkout/payment"
-              className={classes.btn}
-              variant="contained"
-              color="primary"
-              disabled={!proceed}
-            >
-              Make Payment
-            </Button>
-          </div>
+            </div>
+          </Grid>
+          <Grid item xs={12} md={8}>
+            <span className={classes.cartTitle}>
+              My Cart({props.cart.length})
+            </span>
+            <div className={classes.root1}>
+              {props.cart &&
+                props.cart.map((item, idx) => (
+                  <ProductCard key={idx} item={item} />
+                ))}
+            </div>
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={8}>
-          <span className={classes.cartTitle}>
-            My Cart({props.cart.length})
-          </span>
-          <div className={classes.root1}>
-            {props.cart &&
-              props.cart.map((item, idx) => (
-                <ProductCard key={idx} item={item} />
-              ))}
-          </div>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 

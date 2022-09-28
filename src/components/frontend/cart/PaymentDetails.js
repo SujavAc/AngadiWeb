@@ -60,7 +60,7 @@ const calcAPrice = (items) => {
   if (!items && items.length === 0) return 0;
   var res = 0;
   items.forEach((item) => {
-    res += item.quantity * item.taxedPrice;
+    res += item.quantity * item.price;
   });
   return res;
 };
@@ -69,7 +69,7 @@ const calcTPrice = (items) => {
   if (!items && items.length === 0) return 0;
   var res = 0;
   items.forEach((item) => {
-    res += item.quantity * item.totalPrice;
+    res += item.quantity * item.discountPrice;
   });
   return res;
 };
@@ -90,19 +90,19 @@ function PaymentDetails(props) {
 
       <div className={classes.priceDiv}>
         <label className={classes.priceHead}>Actual Price</label>
-        <span className={classes.price}>₹ {aPrice}</span>
+        <span className={classes.price}>AUD {aPrice}</span>
       </div>
       <Divider className={classes.divider} />
       <div className={classes.priceDiv}>
         <label className={classes.priceHead}>Discount</label>
-        <span className={classes.price}>-₹ {aPrice - tPrice} </span>
+        <span className={classes.price}>-AUD {aPrice - tPrice} </span>
       </div>
       <Divider className={classes.divider} />
       <div className={classes.tPriceDiv}>
         <label className={classes.tPriceHead}>Total Amount</label>
-        <span className={classes.tPrice}>₹ {tPrice}</span>
+        <span className={classes.tPrice}>AUD {tPrice}</span>
       </div>
-      <div className={classes.save}>You Save ₹ {aPrice - tPrice}</div>
+      <div className={classes.save}>You Save AUD {aPrice - tPrice}</div>
     </div>
   );
 }

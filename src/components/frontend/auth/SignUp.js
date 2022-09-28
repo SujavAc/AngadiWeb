@@ -16,6 +16,7 @@ import { firestoreConnect } from "react-redux-firebase";
 
 import { signUp, resetAuthErr } from "../../../store/actions/authActions";
 import { configs } from "../../../config/configs";
+import Layout from "../Layout/Layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,7 +81,7 @@ const initialFValues = {
   password: "",
   confirmPassword: "",
   main: "",
-  pincode: "",
+  // pincode: "",
   phoneNum: "",
 };
 
@@ -104,11 +105,11 @@ function SignUp(props) {
         handleDifferentPassword();
         return;
       }
-      var locations = props.locations[0].locations.split(",");
-      var pincode = locations[values.pincode - 1];
+      // var locations = props.locations[0].locations.split(",");
+      // var pincode = locations[values.pincode - 1];
       props.signUp({
         ...values,
-        pincode: pincode,
+        // pincode: pincode,
       });
     }
   };
@@ -125,18 +126,18 @@ function SignUp(props) {
     setDOpen({ ...dOpen, open: false });
   };
 
-  const getPincodes = () => {
-    if (props.locations) {
-      var locations = props.locations[0].locations.split(",");
-      var res = [{ id: 0, title: "None" }];
-      locations.forEach((location, idx) => {
-        res.push({ id: idx + 1, title: location });
-      });
-      return res;
-    } else {
-      return picodeSelect;
-    }
-  };
+  // const getPincodes = () => {
+  //   if (props.locations) {
+  //     var locations = props.locations[0].locations.split(",");
+  //     var res = [{ id: 0, title: "None" }];
+  //     locations.forEach((location, idx) => {
+  //       res.push({ id: idx + 1, title: location });
+  //     });
+  //     return res;
+  //   } else {
+  //     return picodeSelect;
+  //   }
+  // };
 
   const validate = (fieldValues = values) => {
     let tmp = { ...errors };
@@ -153,10 +154,10 @@ function SignUp(props) {
       tmp.confirmPassword = fieldValues.confirmPassword
         ? ""
         : "This field is required or check password again.";
-    if ("pincode" in fieldValues)
-      tmp.pincode = fieldValues.pincode
-        ? ""
-        : "We can't deliver to your area if your pincode is not in the list.";
+    // if ("pincode" in fieldValues)
+    //   tmp.pincode = fieldValues.pincode
+    //     ? ""
+    //     : "We can't deliver to your area if your pincode is not in the list.";
     if ("phoneNum" in fieldValues)
       tmp.phoneNum =
         fieldValues.phoneNum &&
@@ -180,111 +181,113 @@ function SignUp(props) {
   if (props.auth.uid) return <Redirect to="/" />;
 
   return (
-    <div className={classes.root}>
-      <Grid className={classes.grid} container justify="center">
-        <Grid item>
-          <div className={classes.siginRoot}>
-            <div className={classes.imageDiv}>
-              <img
-                className={classes.logo}
-                src="/imgs/logo.png"
-                alt={configs.title}
-              />
-            </div>
-            <Divider className={classes.divider} />
-            <div className={classes.head}>Sign Up</div>
-            <Form onSubmit={handleSubmit}>
-              <div className={classes.form}>
-                <Controls.Input
-                  name="username"
-                  label="Your Name"
-                  value={values.username}
-                  onChange={handleInputChange}
-                  error={errors.username}
-                  className={classes.input}
-                />
-                <Controls.Input
-                  name="email"
-                  label="Email Address"
-                  type="email"
-                  value={values.email}
-                  onChange={handleInputChange}
-                  error={errors.email}
-                  className={classes.input}
-                />
-                <Controls.Input
-                  name="password"
-                  label="Password"
-                  type="password"
-                  value={values.password}
-                  onChange={handleInputChange}
-                  error={errors.password}
-                  className={classes.input}
-                />
-                <Controls.Input
-                  name="confirmPassword"
-                  label="Confirm Password"
-                  type="password"
-                  value={values.confirmPassword}
-                  onChange={handleInputChange}
-                  error={errors.password}
-                  className={classes.input}
-                />
-                <Controls.InputArea
-                  name="main"
-                  label="Delivery Address (Optional)"
-                  value={values.main}
-                  onChange={handleInputChange}
-                  error={errors.main}
-                  rowsMax={5}
-                />
-                <Controls.Select
-                  name="pincode"
-                  label="Pincode"
-                  value={values.pincode}
-                  onChange={handleInputChange}
-                  options={getPincodes()}
-                  error={errors.pincode}
-                />
-                <Controls.Input
-                  name="phoneNum"
-                  type="tel"
-                  label="Phone Number"
-                  value={values.phoneNum}
-                  onChange={handleInputChange}
-                  error={errors.phoneNum}
-                />
-                <Controls.Button
-                  type="submit"
-                  text="Sign Up"
-                  className={classes.btn}
+    <Layout title={"A-Tech > Sign Up"} content={"Chance to be an member of A-Tech"}>
+      <div className={classes.root}>
+        <Grid className={classes.grid} container justify="center">
+          <Grid item>
+            <div className={classes.siginRoot}>
+              <div className={classes.imageDiv}>
+                <img
+                  className={classes.logo}
+                  src="/imgs/logo.png"
+                  alt={configs.title}
                 />
               </div>
-            </Form>
-          </div>
+              <Divider className={classes.divider} />
+              <div className={classes.head}>Sign Up</div>
+              <Form onSubmit={handleSubmit}>
+                <div className={classes.form}>
+                  <Controls.Input
+                    name="username"
+                    label="Your Name"
+                    value={values.username}
+                    onChange={handleInputChange}
+                    error={errors.username}
+                    className={classes.input}
+                  />
+                  <Controls.Input
+                    name="email"
+                    label="Email Address"
+                    type="email"
+                    value={values.email}
+                    onChange={handleInputChange}
+                    error={errors.email}
+                    className={classes.input}
+                  />
+                  <Controls.Input
+                    name="password"
+                    label="Password"
+                    type="password"
+                    value={values.password}
+                    onChange={handleInputChange}
+                    error={errors.password}
+                    className={classes.input}
+                  />
+                  <Controls.Input
+                    name="confirmPassword"
+                    label="Confirm Password"
+                    type="password"
+                    value={values.confirmPassword}
+                    onChange={handleInputChange}
+                    error={errors.password}
+                    className={classes.input}
+                  />
+                  <Controls.InputArea
+                    name="main"
+                    label="Delivery Address (Optional)"
+                    value={values.main}
+                    onChange={handleInputChange}
+                    error={errors.main}
+                    rowsMax={5}
+                  />
+                  {/* <Controls.Select
+                    name="pincode"
+                    label="Pincode"
+                    value={values.pincode}
+                    onChange={handleInputChange}
+                    options={getPincodes()}
+                    error={errors.pincode}
+                  /> */}
+                  <Controls.Input
+                    name="phoneNum"
+                    type="tel"
+                    label="Phone Number"
+                    value={values.phoneNum}
+                    onChange={handleInputChange}
+                    error={errors.phoneNum}
+                  />
+                  <Controls.Button
+                    type="submit"
+                    text="Sign Up"
+                    className={classes.btn}
+                  />
+                </div>
+              </Form>
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-      <Dialog
-        open={dOpen.open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {dOpen.msg}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Controls.Button
-            className={classes.btn}
-            text="Cancel"
-            type="cancel"
-            onClick={handleClose}
-          />
-        </DialogActions>
-      </Dialog>
-    </div>
+        <Dialog
+          open={dOpen.open}
+          onClose={handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dOpen.msg}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Controls.Button
+              className={classes.btn}
+              text="Cancel"
+              type="cancel"
+              onClick={handleClose}
+            />
+          </DialogActions>
+        </Dialog>
+      </div>
+    </Layout>
   );
 }
 

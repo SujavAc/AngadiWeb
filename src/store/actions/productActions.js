@@ -1,3 +1,5 @@
+import { openSnackBar } from "./snackBarAction";
+
 export const createProduct = (product) => {
   return (dispatch, getState, { getFirebase, getFirestore }) => {
     const firestore = getFirestore();
@@ -46,6 +48,28 @@ export const createProduct = (product) => {
   };
 };
 
+export const saveProductDescripion = (id, updatedDescription) => {
+  return (dispatch, getState, { getFirestore, getFirebase }) => {
+    const firestore = getFirestore();
+    firestore
+      .collection("products")
+      .doc(id)
+      .update({description: updatedDescription})
+      .then(() => {
+        dispatch({ type: "UPDATE_DESCRIPTION_PRODUCT" });
+        const payload = {
+          variant: "success",
+          message: "Description Updated",
+          disableSubmit: false,
+        };
+        dispatch(openSnackBar(payload));
+      })
+      .catch((err) => {
+        dispatch({ type: "UPDATE_DESCRIPTION_PRODUCT_ERR", err });
+      });
+  };
+};
+
 export const updateProduct = (changedProduct, product) => {
   return (dispatch, getState, { getFirestore, getFirebase }) => {
     const firestore = getFirestore();
@@ -79,7 +103,7 @@ export const updateProductImage = (product, imageData) => {
         return firestore
           .collection("products")
           .doc(product.id)
-          .update({ imageURL: downloadURL });
+          .update({ imageUrl: downloadURL });
       })
       .then(() => {
         dispatch({ type: "UPDATE_PRODUCT_IMAGE", product });
@@ -156,5 +180,109 @@ export const loadSpecials = () => {
           dispatch({ type: "LOAD_SPECIALS", specials });
         });
     }
+  };
+};
+
+export const deleteImage = (product,imageRef) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+    // firestore
+    //   .collection("products")
+    //   .doc(product.id)
+    //   .delete()
+    //   .then(() => {
+       
+        
+          const productRef = firestore.collection("products").doc(product.id);
+          productRef.get().then((doc)=>{
+            const imageUrls = doc.data().imageUrls;
+            console.log(imageUrls);
+            const newImageUrls = imageUrls.filter(
+              image => image.imageRef !== imageRef
+          )
+          console.log(newImageUrls);
+          productRef.update({imageUrls: newImageUrls}).then(()=>{
+            var imageRefs = firebase
+            .storage()
+            .ref()
+            .child(`productImages/${product.id}/urls/${imageRef}`);
+            imageRefs.delete();
+            dispatch({ type: "DELETED_IMAGE_DATA" });
+          })
+          })
+      .catch((err) => {
+        // dispatch({ type: "DELETED_IMAGE_DATA_ERR", err });
+      });
+  }
+}
+
+export const updateProductMultipleImageURL = (product,imageData) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+
+    const path = `productImages/${product.id}/urls/`;
+    console.log(product,imageData);
+    var storageRef = firebase
+      .storage()
+      .ref()
+      .child(path + imageData.fileName);
+    storageRef
+      .put(imageData.file)
+      .then((snapshot) => {
+        return snapshot.ref.getDownloadURL();
+      })
+      .then((downloadURL) => {
+        var uploadedImage = {"downloadURL": downloadURL, "imageRef": imageData.fileName, "path": path};
+        
+        
+        const productRef = firestore.collection("products").doc(product.id);
+
+        productRef.get().then((doc)=>{
+          const urls = doc.data().imageUrls;
+          
+            const newUrls = [...urls,uploadedImage];
+            console.log(newUrls);
+            firestore
+            .collection("products")
+            .doc(product.id)
+            .update({ imageUrls: newUrls});
+          
+          
+          
+        })
+        
+
+          dispatch({ type: "UPLOADED_IMAGE_DATA", uploadedImage });
+      })
+      .then(() => {
+        // dispatch({ type: "UPDATE_PRODUCT_IMAGE" });
+      })
+      .catch((err) => {
+        dispatch({ type: "UPDATE_PRODUCT_IMAGE_ERR", err });
+      });
+  };
+}
+
+export const updateProductMultipleImage = (product, imageData) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    const firebase = getFirebase();
+    const firestore = getFirestore();
+  //   var images = [];
+  //    imageData.map((e) => {
+  //     images.push({"downloadURL": e.downloadURL, "imageRef": e.fileName, "fileName": e.fileName})
+  // });
+
+      firestore
+          .collection("products")
+          .doc(product.id)
+          .update({ imageUrls: imageData})
+      .then(() => {
+        dispatch({ type: "UPDATE_PRODUCT_IMAGE", product });
+      })
+      .catch((err) => {
+        dispatch({ type: "UPDATE_PRODUCT_IMAGE_ERR", err });
+      });
   };
 };

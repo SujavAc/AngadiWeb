@@ -9,6 +9,7 @@ import { useFirestoreConnect } from "react-redux-firebase";
 import { configs } from "../../../config/configs";
 import { useSelector } from "react-redux";
 import ScrollToTop from "../../common/ScrollToTop";
+import Layout from "../Layout/Layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +63,7 @@ const searchCategory = (categories, id) => {
   if (!categories) return ["", ""];
   var category = categories.find((x) => x.id === id);
   if (category) {
-    return [category.bannerImageURL, category.description, category.count];
+    return [category.bannerImageUrl, category.description, category.count];
   } else {
     return ["", ""];
   }
@@ -89,7 +90,7 @@ function CategoryProducts(props) {
     },
   ]);
 
-  const [imageURL, description, count] = searchCategory(
+  const [imageUrl, description, count] = searchCategory(
     categories,
     props.match.params.categoryId
   );
@@ -101,43 +102,45 @@ function CategoryProducts(props) {
   };
 
   return (
-    <div className={classes.root}>
-      <ScrollToTop />
-      <Grid container spacing={2}>
-        <Hidden smDown>
-          <Grid item md={2}>
-            <CartBox />
+    <Layout title={"A-Tech > Categories"} content={"Browse categories of variety of product and get your desired products quickly"}>
+      <div className={classes.root}>
+        <ScrollToTop />
+        <Grid container spacing={2}>
+          <Hidden smDown>
+            <Grid item md={2}>
+              <CartBox />
+            </Grid>
+          </Hidden>
+          <Grid item xs={12} md={10} container>
+            <div className={classes.main}>
+              {!imgLoaded && (
+                <Skeleton
+                  animation="wave"
+                  variant="rect"
+                  className={classes.placeholder}
+                />
+              )}
+              <img
+                className={classes.banner}
+                src={imageUrl}
+                onLoad={() => setLoaded(true)}
+              />
+              {description && (
+                <div className={classes.description}>{description}</div>
+              )}
+              {products && (
+                <ProductGrid
+                  data={products}
+                  page={page}
+                  nextPage={(value) => nextPage(value)}
+                  count={count}
+                />
+              )}
+            </div>
           </Grid>
-        </Hidden>
-        <Grid item xs={12} md={10} container>
-          <div className={classes.main}>
-            {!imgLoaded && (
-              <Skeleton
-                animation="wave"
-                variant="rect"
-                className={classes.placeholder}
-              />
-            )}
-            <img
-              className={classes.banner}
-              src={imageURL}
-              onLoad={() => setLoaded(true)}
-            />
-            {description && (
-              <div className={classes.description}>{description}</div>
-            )}
-            {products && (
-              <ProductGrid
-                data={products}
-                page={page}
-                nextPage={(value) => nextPage(value)}
-                count={count}
-              />
-            )}
-          </div>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 

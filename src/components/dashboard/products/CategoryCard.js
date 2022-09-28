@@ -15,7 +15,7 @@ import {
   updateCategoryImage,
   deleteCategory,
   updateCategoryBannerImage,
-} from "../../../store/actions/categoryActions";
+} from "../../store/actions/categoryActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -46,9 +46,9 @@ const truncateString = (text, limit) => {
 
 function CategoryCard(props) {
   const classes = useStyles();
-  const [title, setTitle] = useState(props.category.title);
+  const [title, setTitle] = useState(props.category.name);
   const [description, setDescription] = useState(props.category.description);
-  const [imageURL, setImageURL] = useState(props.category.imageURL);
+  const [imageURL, setImageURL] = useState(props.category.imageUrl);
   const [bannerImageURL, setBannerImageURL] = useState(
     props.category.bannerImageURL
   );
@@ -66,8 +66,8 @@ function CategoryCard(props) {
   };
 
   useEffect(() => {
-    setImageURL(props.category.imageURL);
-    setTitle(props.category.title);
+    setImageURL(props.category.imageUrl);
+    setTitle(props.category.name);
     setDescription(props.category.description);
     setBannerImageURL(props.category.bannerImageURL);
   }, [

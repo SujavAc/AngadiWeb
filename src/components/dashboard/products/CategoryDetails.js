@@ -129,8 +129,8 @@ function CategoryDetails(props) {
         <Grid item xs={12}>
           <img
             className={classes.bannerImage}
-            src={props.category.bannerImageURL}
-            alt={props.category.title}
+            src={props.category.bannerImageUrl}
+            alt={props.category.name}
           />
           <UploadImageButton
             className={classes.bannerImageUpdate}
@@ -142,8 +142,8 @@ function CategoryDetails(props) {
         <Grid item xs={3}>
           <img
             className={classes.image}
-            src={props.category.imageURL}
-            alt={props.category.title}
+            src={props.category.imageUrl}
+            alt={props.category.name}
           />
           <UploadImageButton
             className={classes.imageUpdate}
@@ -155,11 +155,11 @@ function CategoryDetails(props) {
         <Grid item xs={9} container alignContent="flex-start">
           <Grid item xs={9} container spacing={2}>
             <Grid item xs="auto">
-              <span className={classes.title}> {props.category.title} </span>
+              <span className={classes.title}> {props.category.name} </span>
             </Grid>
             <Grid item xs="auto">
               <CategoryEditDialog
-                title={props.category.title}
+                title={props.category.name}
                 description={props.category.description}
                 callbackUpdate={handleUpdateText}
               />

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Grid } from "@material-ui/core";
+import { Button, Grid } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import ProductCard from "../product/ProductCard";
 import { configs } from "../../../config/configs";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   productRoot: {
@@ -72,7 +73,7 @@ function ProductGrid(props) {
       </div>
       <div className={classes.productRoot}>
         <Grid container spacing={1}>
-          {sliceProducts(data, page, pageLimit).map((product) => {
+          {sliceProducts(data, page, pageLimit).map((product,index) => {
             return (
               <Grid key={product.id} item xs={6} sm={4} md={3} xl={2}>
                 <ProductCard
@@ -83,6 +84,17 @@ function ProductGrid(props) {
               </Grid>
             );
           })}
+          {data && data.length === 0 && (
+            <Grid item xs={12} sm={4} md={3} xl={2} >
+              <div>
+              Add to Fav list
+              {/* <Link to="./"> */}
+                <Button variant="outlined" color="primary" href="./">Browse Product</Button>
+               
+              {/* </Link> */}
+              </div>
+            </Grid>
+          )}
         </Grid>
         <Grid container justify="center">
           <Grid item>
@@ -90,7 +102,7 @@ function ProductGrid(props) {
               count={Math.ceil(props.count / pageLimit)}
               color="primary"
               variant="outlined"
-              shape="rounded"
+              shape="round"
               page={page}
               className={classes.pagination}
               onChange={handleChange}

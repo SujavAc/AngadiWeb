@@ -54,7 +54,7 @@ function AddCategory(props) {
   }, [props.categories]);
 
   return (
-    <div className={classes.divAlign}>
+    <div >
       <PageHeader
         title={"Manage Category"}
         icon={<LibraryAdd fontSize="large" />}

@@ -15,6 +15,9 @@ import {
   ExpandLess,
   ExpandMore,
   ViewCarousel,
+  LiveHelp,
+  Subject,
+  Info,
   LocationOn,
 } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
@@ -49,15 +52,30 @@ const itemsList1 = [
     icon: BorderColor,
     link: `${base}`,
   },
-  {
-    name: "Locations",
-    icon: LocationOn,
-    link: `${base}/locations`,
-  },
+  // {
+  //   name: "Locations",
+  //   icon: LocationOn,
+  //   link: `${base}/locations`,
+  // },
   {
     name: "Banners",
     icon: ViewCarousel,
     link: `${base}/banners`,
+  },
+  {
+    name: "FAQ List",
+    icon: LiveHelp,
+    link: `${base}/faqlist`,
+  },
+  {
+    name: "About Us",
+    icon: Info,
+    link: `${base}/aboutus`,
+  },
+  {
+    name: "Terms & Condition",
+    icon: Subject,
+    link: `${base}/termsandcondition`,
   },
   {
     name: "Messages",
@@ -91,6 +109,10 @@ const itemsList2 = [
     link: `${base}/products/addproduct`,
   },
   {
+    name: "Update Product Description",
+    link: `${base}/products/updatedescription`,
+  },
+  {
     name: "Add Categories",
     link: `${base}/products/addcategory`,
   },
@@ -117,6 +139,7 @@ function DrawerList(props) {
             to={link}
             key={idx}
             button
+            onClick={props.disableToggle ? null :props.handleOpen}
             selected={isSelected}
           >
             <ListItemIcon>
@@ -153,6 +176,7 @@ function DrawerList(props) {
                 key={idx}
                 component={Link}
                 to={link}
+                onClick={props.disableToggle ? null :props.handleOpen}
                 selected={isSelected}
                 className={classes.nested}
               >

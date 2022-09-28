@@ -4,6 +4,8 @@ import { Grid, Hidden } from "@material-ui/core";
 import { IconButton, Divider } from "@material-ui/core";
 import { Add, Remove } from "@material-ui/icons";
 import ProductSwiper from "./ProductSwiper";
+import Editor from "rich-markdown-editor";
+import CopyLink from "../../common/Elements/CopyLink/CopyLink";
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -11,6 +13,9 @@ import {
   EmailIcon,
   FacebookIcon,
   WhatsappIcon,
+  TwitterShareButton,
+  TwitterIcon,
+  FacebookShareCount,
 } from "react-share";
 
 import { connect } from "react-redux";
@@ -19,6 +24,10 @@ import { firestoreConnect } from "react-redux-firebase";
 import { addItem, removeItem } from "../../../store/actions/cartActions";
 import { getTitlefromId } from "../../common/utils";
 import ScrollToTop from "../../common/ScrollToTop";
+import Layout from "../Layout/Layout";
+import Review from '../Common Component/Rating/Rating';
+import ProductImageCarousel from "./ProductImageCarousel";
+import AnimatedImage from "../../common/Elements/Image/Image";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -176,6 +185,11 @@ const useStyles = makeStyles((theme) => ({
   },
   shareDiv: {
     marginTop: theme.spacing(2),
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyItems: 'center',
+    alignItems: 'center',
+    alignContent: 'center',
   },
   shareIcon: {
     paddingRight: theme.spacing(1),
@@ -243,147 +257,196 @@ function ProductDetails(props) {
   };
 
   return (
-    <div className={classes.root}>
-      <ScrollToTop />
-      <div className={classes.root2}>
-        <Grid container spacing={1}>
-          <Grid
-            item
-            xs={12}
-            sm={6}
-            container
-            justify="center"
-            alignItems="center"
-          >
-            <div className={classes.pImageRoot}>
+    <Layout title={"A-Tech > Product Details"} content={getTitlefromId(props.match.params.productId)}>
+      <div className={classes.root}>
+        <ScrollToTop />
+        <div className={classes.root2}>
+          <Grid container spacing={1}>
+            <Grid
+              item
+              xs={12}
+              sm={6}
+              container
+              // justify="center"
+              // alignItems="center"
+            >
+              
+                {loaded && (
+                  <Hidden smUp>
+                    <div className={classes.pImageRoot}>
+                      <span className={classes.title}>{product?.title + " "}</span>
+                      {product?.discount > 0 && (
+                        <span className={classes.off}>
+                          {product.discount + "% off"}
+                        </span>
+                      )}{" "}
+                      <span className={classes.variant}>{product?.unit}</span>
+                    </div>
+                  </Hidden>
+                )}
+                {/* <img className={classes.pImage} src={product?.imageUrl} /> */}
+                
+              
+              {product?.imageUrls && product?.imageUrls.length > 0 ? (
+                  <ProductImageCarousel images={product?.imageUrls.length > 0 ? product?.imageUrls : []}/>
+                ) : (
+                  <img className={classes.pImage} src={product?.imageUrl} alt={`${product?.title}`}/>
+                  //  {/* <AnimatedImage imageUrl={product?.imageUrl} alt="Product presentation" /> */}
+                )}
+            </Grid>
+            <Grid item xs={12} sm={6} container>
               {loaded && (
-                <Hidden smUp>
-                  <span className={classes.title}>{product.title + " "}</span>
-                  {product.discount > 0 && (
-                    <span className={classes.off}>
-                      {product.discount + "% off"}
-                    </span>
-                  )}{" "}
-                  <span className={classes.variant}>{product.unit}</span>
-                </Hidden>
-              )}
-              <img className={classes.pImage} src={product.imageURL} />
-            </div>
-          </Grid>
-          <Grid item xs={12} sm={6} container>
-            {loaded && (
-              <div className={classes.details}>
-                <Hidden xsDown>
-                  <span className={classes.title}>{product.title} </span>
-                  {product.discount > 0 && (
-                    <span className={classes.off}>
-                      {product.discount + "% off"}
-                    </span>
-                  )}{" "}
-                  <span className={classes.variant}>{product.unit}</span>
-                </Hidden>
-                <div className={classes.priceBox}>
-                  {product.discount > 0 && (
-                    <div className={classes.apriceDiv}>
-                      <span>M.R.P: </span>
-                      <span className={classes.aprice}>
-                        {"₹ " + product.taxedPrice}
+                <div className={classes.details}>
+                  <Hidden xsDown>
+                    <span className={classes.title}>{product?.title} </span>
+                    {product?.discount > 0 && (
+                      <span className={classes.off}>
+                        {product.discount + "% off"}
                       </span>
-                    </div>
-                  )}
-                  <div className={classes.priceDiv}>
-                    <span>Price: </span>
-                    <span className={classes.price}>
-                      {"₹ " + product.totalPrice}
-                    </span>
-                  </div>
-                  {product.discount > 0 && (
-                    <div className={classes.saveDiv}>
-                      <span>You Save: </span>
-                      <span className={classes.save}>
-                        {"₹ " + (product.taxedPrice - product.totalPrice)}
-                      </span>
-                    </div>
-                  )}
-                  <div className={classes.taxinfo}>Inclusive of all taxes</div>
-                </div>
-                {product.visibility && (
-                  <div className={classes.change}>
-                    {count < 1 && (
-                      <div className={classes.addBtn} onClick={handleAdd}>
-                        <span>Add to My Cart</span>
-                        <span className={classes.iconAddBtn}></span>
+                    )}{" "}
+                    <span className={classes.variant}>Available: {product?.unit} unit</span>
+                  </Hidden>
+                  <div className={classes.priceBox}>
+                    {product?.discount > 0 && (
+                      <div className={classes.apriceDiv}>
+                        <span className={classes.aprice}>
+                          {"AUD " + product?.price}
+                        </span>
                       </div>
                     )}
-                    {count > 0 && (
-                      <div className={classes.changeCountDiv}>
-                        <IconButton
-                          onClick={minusCount}
-                          className={classes.countBtn}
-                          aria-label="remove"
-                        >
-                          <Remove />
-                        </IconButton>
+                    <div className={classes.priceDiv}>
+                      <span>Price: </span>
+                      <span className={classes.price}>
+                        {"AUD " + product?.discountPrice}
+                      </span>
+                    </div>
+                    {product?.discount > 0 && (
+                      <div className={classes.saveDiv}>
+                        <span>You Save: </span>
+                        <span className={classes.save}>
+                          {"AUD " + (product?.price - product?.discountPrice)}
+                        </span>
+                      </div>
+                    )}
+                    <div className={classes.taxinfo}>Inclusive of all taxes</div>
+                  </div>
+                  {product?.visibility && (
+                    <div className={classes.change}>
+                      {count < 1 && (
+                        <div className={classes.addBtn} onClick={handleAdd}>
+                          <span>Add to My Cart</span>
+                          <span className={classes.iconAddBtn}></span>
+                        </div>
+                      )}
+                      {count > 0 && (
+                        <div className={classes.changeCountDiv}>
+                          <IconButton
+                            onClick={minusCount}
+                            className={classes.countBtn}
+                            aria-label="remove"
+                          >
+                            <Remove />
+                          </IconButton>
 
-                        <div className={classes.count}>{count}</div>
-                        <IconButton
-                          onClick={plusCount}
-                          className={classes.countBtn}
-                          aria-label="add"
-                        >
-                          <Add />
-                        </IconButton>
-                      </div>
+                          <div className={classes.count}>{count}</div>
+                          <IconButton
+                            onClick={plusCount}
+                            className={classes.countBtn}
+                            aria-label="add"
+                          >
+                            <Add />
+                          </IconButton>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className={classes.shareDiv}>
+                    <EmailShareButton url={window.location.href} subject={"Check out this amazing product"}>
+                      <EmailIcon
+                        className={classes.shareIcon}
+                        size={40}
+                        round={true}
+                      />
+                    </EmailShareButton>
+                    {/* <FacebookShareButton url={window.location.href}>
+                      <FacebookIcon
+                        className={classes.shareIcon}
+                        size={40}
+                        round={true}
+                      />
+                    </FacebookShareButton> */}
+                    <FacebookShareButton
+                      url={window.location.href}
+                      title={`A-tech-${product?.title}`}
+                      hastags={[`${product?.material}`]}
+                      quote="A-Tech - Products in one place"
+                      draggable={true}
+                    >
+                      <FacebookShareCount url={window.location.href}>
+                        {(shareCount) => (
+                          <span className="myShareCountWrapper">{shareCount}</span>
+                        )}
+                      </FacebookShareCount>
+                      <FacebookIcon className={classes.shareIcon} size={40} round={true} />
+                    </FacebookShareButton>
+                    <TwitterShareButton
+                      title={`Check it out!!!-${product?.title}`}
+                      url={window.location.href}
+                      hastags={[`${product?.material}`]}
+                      draggable={true}
+                    >
+                      <TwitterIcon className={classes.shareIcon} size={40} round />
+                    </TwitterShareButton>
+                    <WhatsappShareButton url={window.location.href}>
+                      <WhatsappIcon
+                        className={classes.shareIcon}
+                        size={40}
+                        round={true}
+                      />
+                    </WhatsappShareButton>
+                    <CopyLink />
+                  </div>
+                  {!product?.visibility && (
+                    <div className={classes.ofs}>Out of Stock</div>
+                  )}
+                </div>
+              )}
+            </Grid>
+            <Grid item xs={12} container justify="center">
+              <Grid item xs={11}>
+                <Divider className={classes.divider} />
+              </Grid>
+            </Grid>
+            {loaded && (
+              <Grid item xs={12}>
+                <div className={classes.description}>
+                  <div className={classes.descHead}>Description</div>
+                  <div className={classes.descSubHead}>{product?.title} </div>
+                  <div className={classes.descContent}>
+                    {product?.description && (
+                      <Editor 
+                        defaultValue={product?.description}
+                        className="editor-description"
+                        readOnly
+                        value={product?.description}
+                        
+                        style={{
+                          fontFamily: "'Merriweather', serif",
+                          fontSize: "20px",
+                          letterSpacing: "0.05em",
+                        }}
+                      />
                     )}
                   </div>
-                )}
-                <div className={classes.shareDiv}>
-                  <EmailShareButton url={window.location.href}>
-                    <EmailIcon
-                      className={classes.shareIcon}
-                      size={40}
-                      round={true}
-                    />
-                  </EmailShareButton>
-                  <FacebookShareButton url={window.location.href}>
-                    <FacebookIcon
-                      className={classes.shareIcon}
-                      size={40}
-                      round={true}
-                    />
-                  </FacebookShareButton>
-                  <WhatsappShareButton url={window.location.href}>
-                    <WhatsappIcon
-                      className={classes.shareIcon}
-                      size={40}
-                      round={true}
-                    />
-                  </WhatsappShareButton>
                 </div>
-                {!product.visibility && (
-                  <div className={classes.ofs}>Out of Stock</div>
-                )}
-              </div>
+              </Grid>
             )}
           </Grid>
-          <Grid item xs={12} container justify="center">
-            <Grid item xs={11}>
-              <Divider className={classes.divider} />
-            </Grid>
-          </Grid>
-          {loaded && (
-            <Grid item xs={12}>
-              <div className={classes.description}>
-                <div className={classes.descHead}>Description</div>
-                <div className={classes.descSubHead}>{product.title} </div>
-                <div className={classes.descContent}>{product.description}</div>
-              </div>
-            </Grid>
-          )}
-        </Grid>
+        </div>
+        <Review id={product?.id} widget="big"/>
+        <ProductSwiper title={"People also buy"} categoryId={product?.category}/>
       </div>
-      <ProductSwiper title={"People also buy"} />
-    </div>
+    </Layout>
   );
 }
 
@@ -409,7 +472,7 @@ export default compose(
         collection: "products",
         where: [["title", "==", getTitlefromId(props.match.params.productId)]],
         limit: 1,
-      },
+      }
     ];
   })
 )(ProductDetails);

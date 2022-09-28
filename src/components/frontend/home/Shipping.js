@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
 import ShippingPolicy from "../ShippingPolicy";
+import Layout from "../Layout/Layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,16 +28,18 @@ const useStyles = makeStyles((theme) => ({
 function Shipping() {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <Grid container justify="center">
-        <Grid item xs={11} sm={8}>
-          <div className={classes.base}>
-            <div className={classes.title}>Shipping Policy</div>
-            <ShippingPolicy />
-          </div>
+    <Layout title={"A-Tech > Shipping Policy"} content={"A-Tech Shipping policy"}>
+      <div className={classes.root}>
+        <Grid container justify="center">
+          <Grid item xs={11} sm={8}>
+            <div className={classes.base}>
+              <div className={classes.title}>Shipping Policy</div>
+              <ShippingPolicy />
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 

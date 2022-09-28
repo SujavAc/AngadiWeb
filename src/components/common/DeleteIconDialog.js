@@ -7,6 +7,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DeleteForever from "@material-ui/icons/DeleteForever";
 import IconButton from "@material-ui/core/IconButton";
+import Tooltip from "@material-ui/core/Tooltip";
 
 function DeleteIconDialog(props) {
   const [open, setOpen] = React.useState(false);
@@ -28,6 +29,7 @@ function DeleteIconDialog(props) {
 
   return (
     <>
+      <Tooltip title="Delete">
       <IconButton
         aria-label="deleteforever"
         onClick={handleClickOpen}
@@ -35,6 +37,7 @@ function DeleteIconDialog(props) {
       >
         <DeleteForever />
       </IconButton>
+      </Tooltip>
       <Dialog
         open={open}
         onClose={handleClose}

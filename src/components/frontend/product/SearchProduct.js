@@ -1,14 +1,20 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid, Hidden } from "@material-ui/core";
 import ProductGrid from "./ProductGrid";
-
+import {concat, filter, orderBy, isEmpty, union} from 'lodash';
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { firestoreConnect } from "react-redux-firebase";
 
-import { search } from "../../../store/actions/searchActions";
+
+import { search,addSelectedValues } from "../../../store/actions/searchActions";
 import CartBox from "../cart/CartBox";
 import { configs } from "../../../config/configs";
 import ScrollToTop from "../../common/ScrollToTop";
+import Layout from "../Layout/Layout";
+import SearchFilter from "../Search/SearchFilter";
+import CategoryFilter from "../Search/CategoryFilter";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,10 +54,34 @@ const useStyles = makeStyles((theme) => ({
 function SearchProduct(props) {
   const classes = useStyles();
   const search = props.match.params.searchParam;
+  const [finalFilteredResult, setFinalFilteredResult] = useState([]);
 
   useEffect(() => {
-    props.search(props.match.params.searchParam);
-  }, [props.match.params.searchParam]);
+    var textToSearch = props.match.params.searchParam;
+    var filteredArrayDescription = props.products && props.products.filter((item) => {
+            return item.description
+                    .toString()
+                    .toLowerCase()
+                    .indexOf(textToSearch.toLowerCase()) > -1
+   
+            });
+            var filteredArray = props.products && props.products.filter((item) => {
+              return item.title
+                              .toString()
+                              .toLowerCase()
+                              .indexOf(textToSearch.toLowerCase()) > -1
+             
+          });
+          var filteredArrayMaterial = props.products && props.products.filter((item) => {
+            return item.material
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(textToSearch.toLowerCase()) > -1
+           
+        });
+          const newFilteredArray = union(filteredArrayDescription,filteredArray,filteredArrayMaterial);
+    setFinalFilteredResult(newFilteredArray);
+  }, [props.match.params.searchParam,props.products]);
 
   if (props.searching) {
     return <div>loading results.......</div>;
@@ -62,44 +92,55 @@ function SearchProduct(props) {
   }
 
   return (
-    <div className={classes.root}>
-      <ScrollToTop />
-      <Grid container spacing={2}>
-        <Hidden smDown>
-          <Grid item md={2}>
-            <CartBox />
-          </Grid>
-        </Hidden>
-        <Grid item xs={12} md={10} container>
-          <div className={classes.main}>
-            <Grid container justify="space-between">
-              <Grid item>
-                <span className={classes.searchHead}>
-                  Showing all results for{" "}
-                  <span className={classes.searchTitle}>{search}</span>
-                </span>
-              </Grid>
-              <Grid item>
-                {configs.usingAlgoliaFree && (
-                  <span className={classes.algolia}>
-                    Search powered <br /> by <b>Algolia</b>
-                  </span>
-                )}
-              </Grid>
+    <Layout title={"A-Tech > Search"} content={"Find the products quicky using different filters."}>
+      <div className={classes.root}>
+        <ScrollToTop />
+        <Grid container spacing={2}>
+          <Hidden smDown>
+            <Grid item md={2}>
+              <CartBox />
             </Grid>
-
-            {props.results && (
-              <ProductGrid
-                data={props.results}
+          </Hidden>
+          <Grid item xs={12} md={10} container>
+            <div className={classes.main}>
+              <Grid container justify="space-between">
+                <Grid item>
+                  <span className={classes.searchHead}>
+                    Showing all results for{" "}
+                    <span className={classes.searchTitle}>{search}</span>
+                  </span>
+                </Grid>
+                
+              </Grid>
+              <Grid item xs={12} sm={12} lg={12} xl={12}>
+              <SearchFilter />
+                <Grid item xs={12} sm={3}>
+                <CategoryFilter category={props.categories} addSelectedValues={props.addSelectedValues} searchSelectedValue={props.search}/>
+                </Grid>
+                
+                </Grid>
+              {finalFilteredResult && finalFilteredResult.length > 0 && (
+                <ProductGrid
+                data={finalFilteredResult}
                 page={1}
-                count={props.results.length}
+                count={finalFilteredResult.length}
                 nextPage={() => {}}
               />
-            )}
-          </div>
+              )}
+
+              {/* {props.results && (
+                <ProductGrid
+                  data={props.results}
+                  page={1}
+                  count={props.results.length}
+                  nextPage={() => {}}
+                />
+              )} */}
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 
@@ -109,13 +150,19 @@ const mapStateToProps = (state) => {
     results: state.search.results,
     err: state.search.err,
     searching: state.search.searching,
+    products: state.firestore.ordered.products,
+    search: state.search.searchFilterValues
   };
 };
 
 const matchDispatchToProps = (dispatch) => {
   return {
-    search: (query) => dispatch(search(query)),
+    addSelectedValues: (data) => dispatch(addSelectedValues(data)),
   };
 };
 
-export default connect(mapStateToProps, matchDispatchToProps)(SearchProduct);
+// export default connect(mapStateToProps, matchDispatchToProps)(SearchProduct);
+export default compose(
+  connect(mapStateToProps, matchDispatchToProps),
+  firestoreConnect([{ collection: "products" },{collection: "categories"}])
+)(SearchProduct);

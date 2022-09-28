@@ -13,6 +13,8 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
 import { configs } from "../../../config/configs";
+import GlobalDialog from "../../common/Global Dialog/slide-dialog";
+import Subscribe from "../Subscribe/Subscribe";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -151,6 +153,18 @@ function LeftDrawer(props) {
                   {props.auth.uid ? "Orders" : "Sign Up"}
                 </Button>
               </Grid>
+              <Grid item xs={12}>
+                <div onClick={handleClick}>
+                  <GlobalDialog actionButton={false} buttonName={'Subscribe'} fullwidth={true}>
+                    <Subscribe 
+                      title={"Subscribe for latest deals and promotion"}
+                      text={
+                          "To subscribe to this website, please enter your email address here. We will send updates occasionally."
+                      }
+                    />
+                  </GlobalDialog>
+                </div>
+              </Grid>
             </Grid>
           </Grid>
         </div>
@@ -184,38 +198,6 @@ function LeftDrawer(props) {
               {configs.contactInfo.email}
             </a>
           </span>
-          <h3 className={classes.headingFooter}>Download App</h3>
-          <Grid
-            className={classes.headingFooter}
-            container
-            justify="space-around"
-            spacing={1}
-          >
-            <Grid item xs={6}>
-              <a
-                href={configs.contactInfo.androidAppLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  src="/imgs/play_store.png"
-                  alt="Download app from playstore"
-                />
-              </a>
-            </Grid>
-            <Grid item xs={6}>
-              <a
-                href={configs.contactInfo.iosAppLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <img
-                  src="/imgs/ios_store.png"
-                  alt="Download app from appsrore"
-                />
-              </a>
-            </Grid>
-          </Grid>
         </div>
       </Drawer>
     </div>

@@ -1,24 +1,24 @@
 export const configs = {};
 
-configs.title = "E Angadi";
-configs.description = "Buy Online from Angadi | All payment options available";
+configs.title = "A-Tech";
+configs.description = "Buy Online from A-Tech | All payment options available";
 
 configs.aboutus =
-  "E Angadi is a easy to deploy e commerce application with all payment options, specially designed for Indian user space";
+  "A-Tech is a easy to deploy e commerce application with all payment options, specially designed for Australian user space";
 
 configs.address =
-  "#000, xyz street, near xyz complex, but it is in Hyderabad, love Hyderabad";
+  "#000, xyz street, near xyz complex";
 
 // provide contact number with country code
 configs.contactInfo = {
-  email: "example@gmail.com",
-  watsappNum: "919966529191",
+  email: "a.techaccess@gmail.com",
+  watsappNum: "+61424403509",
   androidAppLink: "#",
   iosAppLink: "#",
 };
 
 // Buttons, Icons, Some Imp text color
-configs.primary = "#215273";
+configs.primary = "#c70f11";
 // Heade/Toolbar color
 configs.secondary = "#E1F5FE";
 // Footer color
@@ -37,6 +37,8 @@ configs.algolia = {
 
 // max cards in single pagination
 configs.maxPageCards = 20;
+configs.maxCategoryOnHomepage = 10;
+configs.maxRatingCards = 20;
 // max categories on category bar below header
 configs.maxCategoriesOnBar = 16;
 // max categories on category box
@@ -47,6 +49,6 @@ configs.openPincodeEmptyCart = false;
 
 // Firebase functions base_url
 configs.functionsURL =
-  "https://us-central1-suryakantham-a7982.cloudfunctions.net/payment";
+  "https://us-central1-tlist-ee9f5.cloudfunctions.net/api";
 
 configs.usingAlgoliaFree = true;

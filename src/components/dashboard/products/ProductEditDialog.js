@@ -20,6 +20,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Clear from "@material-ui/icons/Clear";
+import ImageUpload from '../../common/Image upload/ImageUpload'
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -65,18 +66,27 @@ function ProductEditDialog(props) {
   };
 
   const initialFValues = {
-    title: props.product.title,
-    description: props.product.description,
-    category: props.product.category,
+    title: props.product.title || "",
+    description: props.product.description || "",
+    category: props.product.category || "",
     unitSelect: 0,
-    price: props.product.price,
-    discount: props.product.discount,
-    taxes: props.product.taxes,
-    visibility: props.product.visibility,
-    special: props.product.special,
+    price: props.product.price || 0,
+    discount: props.product.discount || 0,
+    taxes: props.product.taxes || [],
+    visibility: props.product.visibility || false,
+    special: props.product.special || false,
     taxName: "",
     tax: 0,
     taxSelect: 0,
+
+    brand: props.product.brand || "",
+    dropShip: props.product.dropShip || false,
+    currency: props.product.currency || "",
+    dropshipingSite: props.product.dropshipingSite || "",
+    material: props.product.material || "",
+    status: props.product.status || "",
+    weight: props.product.weight || "",
+    imageUrls: props.product.imageUrls || []
   };
 
   const getUnitSelect = () => {
@@ -110,6 +120,18 @@ function ProductEditDialog(props) {
     });
   }, []);
 
+  const productStatus = [
+    {id:'', title:''},
+    {id:'promotion', title:'Promotion'},
+    {id:'affiliate', title:'Affiliate'},
+    {id:'comingSoon', title:'Coming Soon'},
+    {id:'trending', title:'Trending Product'},
+    {id:'clearence', title:'Clearance Product'},
+    {id:'newArraival', title:'New Arraival'},
+    {id:'priceDrop', title:'Sale'},
+
+  ]
+  
   const validateTax = (fieldValues = values) => {
     let tmp = { ...errors };
     if ("taxName" in fieldValues)
@@ -129,10 +151,10 @@ function ProductEditDialog(props) {
     let tmp = { ...errors };
     if ("title" in fieldValues)
       tmp.title = fieldValues.title ? "" : "This field is required.";
-    if ("description" in fieldValues)
-      tmp.description = fieldValues.description
-        ? ""
-        : "This field is required.";
+    // if ("description" in fieldValues)
+    //   tmp.description = fieldValues.description
+    //     ? ""
+    //     : "This field is required.";
     if ("category" in fieldValues)
       tmp.category = fieldValues.category
         ? ""
@@ -171,15 +193,12 @@ function ProductEditDialog(props) {
   const calculateTotal = (price, discountPercentage, taxes) => {
     var totalPrice = price;
     for (var taxe in taxes) {
-      console.log(taxes[taxe]);
       var taxValue = parseFloat(taxes[taxe].value, 10);
-      console.log(taxValue);
       if (taxes[taxe].select === 0) {
         totalPrice -= price * (taxValue / 100);
       } else {
         totalPrice -= taxValue;
       }
-      console.log(totalPrice);
     }
 
     var taxedPrice = totalPrice;
@@ -198,12 +217,14 @@ function ProductEditDialog(props) {
 
   const onAddTax = () => {
     if (validateTax()) {
-      var tmp = values.taxes;
-      tmp.push({
-        name: values.taxName,
-        select: values.taxSelect,
-        value: values.tax,
-      });
+      var tmp = [
+        ...values.taxes,
+        {
+          name: values.taxName,
+          select: values.taxSelect,
+          value: values.tax,
+        }
+      ];
       setValues({
         ...values,
         taxes: tmp,
@@ -212,6 +233,19 @@ function ProductEditDialog(props) {
         taxSelect: 0,
       });
     }
+  };
+
+  const getCategories = () => {
+    const selectCategories = [{ id: 0, title: "None" }];
+    if (props.categories) {
+      for (var i = 0; i < props.categories.length; i++) {
+        selectCategories.push({
+          id: props.categories[i].id,
+          title: props.categories[i].name,
+        });
+      }
+    }
+    return selectCategories;
   };
 
   const handleSubmit = () => {
@@ -235,10 +269,11 @@ function ProductEditDialog(props) {
 
       var res = {
         ...values,
-        totalPrice: totalPrice,
+        discountPrice: totalPrice,
         price: price,
         taxedPrice: taxedPrice,
         discount: discount,
+        updatedAt: Date.now(),
         unit: units[values.unitSelect - 1].title,
       };
 
@@ -247,6 +282,8 @@ function ProductEditDialog(props) {
       delete res.taxSelect;
       delete res.unitSelect;
 
+      
+      
       props.callbackSave(res, props.product);
       setOpen(false);
     }
@@ -280,7 +317,7 @@ function ProductEditDialog(props) {
             <Typography variant="h6" className={classes.title}>
               Edit Product
             </Typography>
-            <Button autoFocus color="inherit" onClick={handleSubmit}>
+            <Button autoFocus color="inherit" onClick={()=>handleSubmit()}>
               Save
             </Button>
           </Toolbar>
@@ -292,14 +329,21 @@ function ProductEditDialog(props) {
                 <Controls.Switch
                   name="visibility"
                   label="Product Visibility"
-                  value={values.visibility}
+                  value={values.visibility || false}
+                  onChange={handleSwitchChange}
+                  color="primary"
+                />
+                <Controls.Switch
+                  name="dropShip"
+                  label="Drop shipy"
+                  value={values.dropShip || false}
                   onChange={handleSwitchChange}
                   color="primary"
                 />
                 <Controls.Switch
                   name="special"
                   label="Special Offer"
-                  value={values.special}
+                  value={values.special || false}
                   onChange={handleSwitchChange}
                   color="primary"
                 />
@@ -310,14 +354,40 @@ function ProductEditDialog(props) {
                   onChange={handleInputChange}
                   error={errors.title}
                 />
-                <Controls.InputArea
+                {/* <Controls.InputArea
                   name="description"
                   label="Description"
                   value={values.description}
                   onChange={handleInputChange}
                   error={errors.description}
-                  rowsMax={5}
+                  maxRows={5}
+                /> */}
+                <Controls.Select
+              name="category"
+              label="Category"
+              value={values.category}
+              onChange={handleInputChange}
+              options={getCategories()}
+              error={errors.category}
+            />
+                <Controls.Select
+              name="status"
+              label="Status"
+              value={values.status}
+              onChange={handleInputChange}
+              options={productStatus}
+              error={errors.status}
+            />
+                {values.dropShip && (
+                  <Controls.InputArea
+                  name="dropshipingSite"
+                  label="Dropshipping Site URL"
+                  value={values.dropshipingSite}
+                  onChange={handleInputChange}
+                  error={errors.dropshipingSite}
+                  maxRows={2}
                 />
+                )}
               </Grid>
               <Grid xs={12} sm={6} item>
                 <Grid xs={12} item container>
@@ -342,16 +412,61 @@ function ProductEditDialog(props) {
                   </Grid>
                   <Grid xs={6} item>
                     <Controls.Input
+                      name="brand"
+                      label="Brand"
+                      value={values.brand}
+                      onChange={handleInputChange}
+                      error={errors.brand}
+                    />
+                  </Grid>
+                  <Grid xs={6} item>
+                    <Controls.Input
+                      name="currency"
+                      label="Currency"
+                      value={values.currency}
+                      onChange={handleInputChange}
+                      error={errors.currency}
+                    />
+                  </Grid>
+                  <Grid xs={6} item>
+                    <Controls.Input
+                      name="material"
+                      label="Material"
+                      value={values.material}
+                      onChange={handleInputChange}
+                      error={errors.material}
+                    />
+                  </Grid>
+                  {/* <Grid xs={6} item>
+                    <Controls.Input
+                      name="status"
+                      label="Status"
+                      value={values.status}
+                      onChange={handleInputChange}
+                      error={errors.status}
+                    />
+                  </Grid> */}
+                  <Grid xs={6} item>
+                    <Controls.Input
+                      name="weight"
+                      label="Item weight"
+                      value={values.weight}
+                      onChange={handleInputChange}
+                      error={errors.weight}
+                    />
+                  </Grid>
+                  <Grid xs={6} item>
+                    <Controls.Input
                       name="discount"
                       label="Discount Percentage"
-                      value={values.discount}
+                      value={values.discount || ''}
                       onChange={handleInputChange}
                       error={errors.discount}
                     />
                   </Grid>
                   <Grid xs={12} item container>
                     <Grid xs={12} item>
-                      {values.taxes.length > 0 && (
+                      {values.taxes?.length > 0 && (
                         <Table
                           style={{ minWidth: 200, marginBottom: 20 }}
                           size="small"
@@ -381,7 +496,7 @@ function ProductEditDialog(props) {
                                 <TableCell align="center">
                                   {" "}
                                   {tax.value}
-                                  {tax.select === 0 ? "%" : "₹"}{" "}
+                                  {tax.select === 0 ? "%" : "AUD"}{" "}
                                 </TableCell>
                                 <TableCell align="center">
                                   <IconButton
@@ -431,6 +546,9 @@ function ProductEditDialog(props) {
                     </Grid>
                   </Grid>
                 </Grid>
+              </Grid>
+              <Grid item xs={12} sm={12} lg={12}>
+                <ImageUpload product={props.product} imageLists={props.product.imageUrls || []}/>
               </Grid>
             </Grid>
           </Form>

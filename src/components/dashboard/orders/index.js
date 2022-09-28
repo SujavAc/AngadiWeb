@@ -45,12 +45,9 @@ function Orders(props) {
     }
   }, [props.orders]);
 
-  useEffect(() => {
-    console.log(orderSelected);
-  }, [orderSelected]);
 
   return (
-    <div className={classes.divAlign}>
+    <div>
       <PageHeader
         title={"Manage Orders"}
         icon={<ReceiptIcon fontSize="large" />}
@@ -75,7 +72,6 @@ function Orders(props) {
 }
 
 const mapStatetoProps = (state) => {
-  console.log(state.firestore.ordered.orders);
   return {
     profile: state.firebase.profile,
     auth: state.firebase.auth,
@@ -88,8 +84,8 @@ export default compose(
     return [
       {
         collection: "orders",
-        where: [["completed", "==", true]],
-        orderBy: ["time", "desc"],
+        where: [["completed", "==", false]],
+        orderBy: ["createdAt", "desc"],
         limit: 200,
       },
     ];

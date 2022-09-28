@@ -2,6 +2,7 @@ const initstate = {
   results: [],
   searching: false,
   err: "",
+  searchFilterValues: {}
 };
 
 const searchReducer = (state = initstate, action) => {
@@ -11,6 +12,12 @@ const searchReducer = (state = initstate, action) => {
         ...state,
         searching: true,
         results: [],
+      };
+      
+      case "ADDED_SELECTED_VALUE":
+      return {
+        ...state,
+        searchFilterValues: action.payload
       };
     case "SEARCHING_FALSE":
       if (action.err) {

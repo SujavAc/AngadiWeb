@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Grid } from "@material-ui/core";
+import Layout from "./Layout/Layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,17 +25,19 @@ const useStyles = makeStyles((theme) => ({
 function NotFound() {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
-      <Grid container direction="column" justify="center" alignItems="center">
-        <Grid item xs={12}>
-          <h2 className={classes.heading}>
-            <span className={classes.error}>Error 404</span>
-            <br /> Page Not Found!
-          </h2>
-          <img src="/imgs/404error.svg" alt="Page Not Found" />
+    <Layout title={"A-Tech > 404 Error"} content={"Page Not Found"}>
+      <div className={classes.root}>
+        <Grid container direction="column" justify="center" alignItems="center">
+          <Grid item xs={12}>
+            <h2 className={classes.heading}>
+              <span className={classes.error}>Error 404</span>
+              <br /> Page Not Found!
+            </h2>
+            <img src="/imgs/404error.svg" alt="Page Not Found" />
+          </Grid>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 

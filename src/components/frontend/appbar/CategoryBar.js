@@ -64,8 +64,8 @@ function CategoryBar(props) {
 
   return (
     <div className={classes.catBarRoot}>
-      <PincodeDialog />
-      <Hidden xsDown>
+      {/* <PincodeDialog /> */}
+      {/* <Hidden xsDown> */}
         {props.categories &&
           props.categories.map((category, idx) => {
             if (idx < catLimit) {
@@ -75,7 +75,7 @@ function CategoryBar(props) {
                   className={classes.category}
                   to={"/category/" + category.id}
                 >
-                  {category.title}
+                  {category.name}
                 </Link>
               );
             } else {
@@ -87,7 +87,7 @@ function CategoryBar(props) {
             Others
           </Link>
         )}
-      </Hidden>
+      {/* </Hidden> */}
     </div>
   );
 }

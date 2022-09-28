@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { loadCartItems } from "../../../store/actions/cartActions";
 import ScrollToTop from "../../common/ScrollToTop";
+import Layout from "../Layout/Layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -78,71 +79,72 @@ function Cart(props) {
   }, [props.auth]);
 
   return (
-    <div className={classes.root}>
-      <ScrollToTop />
-      <Grid container spacing={3}>
-        <Grid item xs={12} lg={8}>
-          {props.cart.length > 0 && (
-            <>
-              <span className={classes.cartTitle}>
-                My Cart({props.cart.length})
-              </span>
-              <div className={classes.root1}>
-                {props.cart &&
-                  props.cart.map((item, idx) => (
-                    <ProductCard key={idx} item={item} />
-                  ))}
-              </div>
-            </>
-          )}
-          {props.cart.length === 0 && (
-            <>
-              <Grid
-                container
-                justify="center"
-                className={classes.noItemsContainer}
-              >
-                <Grid item xs="auto">
-                  <div className={classes.noItemsTextHeading}>
-                    No Items in Cart
-                  </div>
-                  <div className={classes.noItemsText}>
-                    Explore the wide range of our products and have them
-                    delivered to your doorstep
-                  </div>
-                  <Button
-                    component={Link}
-                    className={classes.btn}
-                    to="/deals"
-                    variant="outlined"
-                    color="primary"
-                    alignItems="center"
-                  >
-                    Explore Our Products
-                  </Button>
+    <Layout title={"A-Tech > View Cart"} content={"View you cart and manage your cart product"}>
+      <div className={classes.root}>
+        <ScrollToTop />
+        <Grid container spacing={3}>
+          <Grid item xs={12} lg={8}>
+            {props.cart.length > 0 && (
+              <>
+                <span className={classes.cartTitle}>
+                  My Cart({props.cart.length})
+                </span>
+                <div className={classes.root1}>
+                  {props.cart &&
+                    props.cart.map((item, idx) => (
+                      <ProductCard key={idx} item={item} />
+                    ))}
+                </div>
+              </>
+            )}
+            {props.cart.length === 0 && (
+              <>
+                <Grid
+                  container
+                  justify="center"
+                  className={classes.noItemsContainer}
+                >
+                  <Grid item xs="auto">
+                    <div className={classes.noItemsTextHeading}>
+                      No Items in Cart
+                    </div>
+                    <div className={classes.noItemsText}>
+                      Explore the wide range of our products and have them
+                      delivered to your doorstep
+                    </div>
+                    <Button
+                      component={Link}
+                      className={classes.btn}
+                      to="/deals"
+                      variant="outlined"
+                      color="primary"
+                    >
+                      Explore Our Products
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </>
-          )}
+              </>
+            )}
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <CheckoutStepper activeStep={0} />
+            <PaymentDetails />
+            <div className={classes.proceedBtn}>
+              <Button
+                component={Link}
+                to="/checkout/review"
+                className={classes.btn}
+                variant="contained"
+                color="primary"
+                disabled={props.cart.length <= 0}
+              >
+                Place Order
+              </Button>
+            </div>
+          </Grid>
         </Grid>
-        <Grid item xs={12} lg={4}>
-          <CheckoutStepper activeStep={0} />
-          <PaymentDetails />
-          <div className={classes.proceedBtn}>
-            <Button
-              component={Link}
-              to="/checkout/review"
-              className={classes.btn}
-              variant="contained"
-              color="primary"
-              disabled={props.cart.length <= 0}
-            >
-              Place Order
-            </Button>
-          </div>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 

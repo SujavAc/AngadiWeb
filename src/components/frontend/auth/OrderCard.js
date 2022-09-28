@@ -12,6 +12,7 @@ import {
   Slide,
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
+import DeleteIconDialog from "../../common/DeleteIconDialog";
 
 const useStyles = makeStyles((theme) => ({
   orderDiv: {
@@ -117,7 +118,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function OrderCard({ order, cancelOrder }) {
+function OrderCard({ order, cancelOrder, deleteOrder }) {
   const classes = useStyles();
   const maxCount = 3;
   const [openAlert, setOpenAlert] = useState(false);
@@ -148,17 +149,18 @@ function OrderCard({ order, cancelOrder }) {
         </Grid>
         <Grid item xs={6} container justify="flex-end">
           <div className={classes.total}>
-            Order Total ({getItemsCount(order.cart)} items)
+            Order Total ({getItemsCount(order.order_data)} items)
           </div>
-          <div className={classes.totalVal}>₹ {order.amount} </div>
+          <div className={classes.totalVal}>AUD {order.amount} </div>
+          
         </Grid>
         <Grid item container className={classes.itemGrid} xs={12} sm={9}>
-          {getItems(order.cart).map((item, idx) => {
+          {getItems(order.order_data).map((item, idx) => {
             if (idx === maxCount) {
               return (
                 <Grid container justify="center">
                   <Grid className={classes.moreDiv} item xs="auto">
-                    + {getItemsCount(order.cart) - maxCount} more
+                    + {getItemsCount(order.order_data) - maxCount} more
                   </Grid>
                 </Grid>
               );
@@ -174,12 +176,22 @@ function OrderCard({ order, cancelOrder }) {
                     </div>
                   </Grid>
                   <Grid item xs={2} container justify="flex-end">
-                    <div className={classes.unitP}>₹ {item.price} </div>
+                    <div className={classes.unitP}>AUD {item.price} </div>
                   </Grid>
                 </div>
               );
             }
           })}
+        </Grid>
+        <Grid item container className={classes.itemGrid} xs={12} sm={9}>
+          <Grid container >
+            <Grid className={classes.moreDiv} item xs="auto">
+              <DeleteIconDialog
+                alertText={"Are you sure want to delete order from your order list?"}
+                callbackDelete={() => deleteOrder(order.id)}
+              /> 
+            </Grid>
+          </Grid>
         </Grid>
         <Hidden xsDown>
           <Grid

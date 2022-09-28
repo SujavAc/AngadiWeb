@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { loadSpecials } from "../../../store/actions/productActions";
 import CartBox from "../cart/CartBox";
 import ScrollToTop from "../../common/ScrollToTop";
+import Layout from "../Layout/Layout";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,28 +56,30 @@ function SpecialProducts(props) {
   }, []);
 
   return (
-    <div className={classes.root}>
-      <ScrollToTop />
-      <Grid container spacing={2}>
-        <Hidden smDown>
-          <Grid item md={2}>
-            <CartBox />
+    <Layout title={"A-Tech > Browse available deals and discounts"} content={"Find out the perfect products with the heavy deals available"} >
+      <div className={classes.root}>
+        <ScrollToTop />
+        <Grid container spacing={2}>
+          <Hidden smDown>
+            <Grid item md={2}>
+              <CartBox />
+            </Grid>
+          </Hidden>
+          <Grid item xs={12} md={10} container>
+            <div className={classes.main}>
+              {props.products && (
+                <ProductGrid
+                  data={props.products}
+                  page={1}
+                  count={props.products.length}
+                  nextPage={() => {}}
+                />
+              )}
+            </div>
           </Grid>
-        </Hidden>
-        <Grid item xs={12} md={10} container>
-          <div className={classes.main}>
-            {props.products && (
-              <ProductGrid
-                data={props.products}
-                page={1}
-                count={props.products.length}
-                nextPage={() => {}}
-              />
-            )}
-          </div>
         </Grid>
-      </Grid>
-    </div>
+      </div>
+    </Layout>
   );
 }
 

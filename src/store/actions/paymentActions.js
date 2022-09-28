@@ -1,6 +1,7 @@
 import axios from "axios";
 import { configs } from "../../config/configs";
 import { clearCart } from "./cartActions";
+import { openSnackBar } from "./snackBarAction";
 
 const calcTPrice = (items) => {
   if (!items && items.length === 0) return 0;
@@ -74,36 +75,36 @@ export const createOrder = (cod) => async (dispatch, getState) => {
   }
 };
 
-export const verifyOrder = (
-  razorpay_signature,
-  razorpay_order_id,
-  razorpay_payment_id
-) => async (dispatch, getState) => {
-  const state = getState();
-  if (state.firebase.auth.uid) {
-    try {
-      const options = {
-        razorpay_signature,
-        razorpay_order_id,
-        razorpay_payment_id,
-      };
-      const res = await axios.post(
-        configs.functionsURL + "/verify_order",
-        options
-      );
-      dispatch({
-        type: "TRANS_VERIFIED",
-        payload: res.data,
-      });
-      dispatch(clearCart());
-    } catch (err) {
-      dispatch({
-        type: "TRANS_NOT_VERIFIED",
-        err: err,
-      });
-    }
-  }
-};
+// export const verifyOrder = (
+//   razorpay_signature,
+//   razorpay_order_id,
+//   razorpay_payment_id
+// ) => async (dispatch, getState) => {
+//   const state = getState();
+//   if (state.firebase.auth.uid) {
+//     try {
+//       const options = {
+//         razorpay_signature,
+//         razorpay_order_id,
+//         razorpay_payment_id,
+//       };
+//       const res = await axios.post(
+//         configs.functionsURL + "/verify_order",
+//         options
+//       );
+//       dispatch({
+//         type: "TRANS_VERIFIED",
+//         payload: res.data,
+//       });
+//       dispatch(clearCart());
+//     } catch (err) {
+//       dispatch({
+//         type: "TRANS_NOT_VERIFIED",
+//         err: err,
+//       });
+//     }
+//   }
+// };
 
 export const resetPaymentState = () => {
   return (dispatch) => {
@@ -125,6 +126,35 @@ export const cancelOrder = (orderID) => {
       })
       .catch((err) => {
         dispatch({ type: "CANCEL_ERR", err: err });
+      });
+  };
+};
+
+export const deleteOrder = (orderID) => {
+  return (dispatch, getState, { getFirebase, getFirestore }) => {
+    const firestore = getFirestore();
+    firestore
+      .collection("orders")
+      .doc(orderID)
+      .delete()
+      .then(() => {
+        dispatch({ type: "DELETED_ORDER", orderID: orderID });
+        const payload = {
+          variant: "success",
+          message:
+            "Successfully deleted order from your order list",
+          disableSubmit: false,
+        };
+        dispatch(openSnackBar(payload));
+      })
+      .catch((err) => {
+        dispatch({ type: "DELETED_ORDER_ERR", err: err });
+        const payload = {
+          variant: "error",
+          message: "Error while deleting your order",
+          disableSubmit: false,
+        };
+        dispatch(openSnackBar(payload));
       });
   };
 };

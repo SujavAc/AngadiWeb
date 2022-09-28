@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { Visibility, Search } from "@material-ui/icons";
 import Controls from "../../common/controls/Controls";
+import { ConvertDate } from "../../utils/ConvertDate";
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -35,12 +36,12 @@ const headCells = [
 // FIXME: orderId is not wraping in tablecell
 // FIXME: table content is overflowing on small screen device
 
-const getDate = (time) => {
-  var date = new Date(time.toDate().toString());
-  return (
-    date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
-  );
-};
+// const getDate = (time) => {
+//   var date = new Date(time.toDate().toString());
+//   return (
+//     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
+//   );
+// };
 
 const wrapStyle = {
   whiteSpace: "normal",
@@ -71,7 +72,6 @@ function OrdersTable({ orders, orderSelected, changeOrderSelected }) {
         else
           return items.filter(
             (x) =>
-              x.pincode.includes(target.pincode) ||
               x.id.toLowerCase().includes(target.value.toLowerCase())
           );
       },
@@ -102,16 +102,16 @@ function OrdersTable({ orders, orderSelected, changeOrderSelected }) {
             return (
               <TableRow key={idx}>
                 <TableCell style={wrapStyle}>{item.id} </TableCell>
-                <TableCell>{getDate(item.time)} </TableCell>
+                <TableCell>{ConvertDate(item.createdAt)} </TableCell>
                 <TableCell>{item.amount} </TableCell>
                 <TableCell>
-                  {item.cancelled === false && item.deliverd === false && (
-                    <>ToDo</>
-                  )}
-                  {item.cancelled === true && item.deliverd === false && (
+                    {!item.cancelled && !item.deliverd && (
+                      <>ToDo</>
+                    )}
+                  {item.cancelled && (
                     <>Cancelled</>
                   )}
-                  {item.cancelled === false && item.deliverd === true && (
+                  {item.deliverd && (
                     <>Delivered</>
                   )}
                 </TableCell>

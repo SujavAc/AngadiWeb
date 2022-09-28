@@ -150,7 +150,7 @@ function Banners(props) {
   };
 
   return (
-    <div className={classes.divAlign}>
+    <div>
       <PageHeader
         title={"Manage Banners"}
         icon={<ViewCarousel fontSize="large" />}
@@ -279,7 +279,6 @@ function Banners(props) {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     banners: state.firestore.ordered.banners,
     bannerStatus: state.banner,

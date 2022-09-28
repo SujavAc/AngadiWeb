@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import "firebase/auth";
+import 'firebase/database';
 import "firebase/storage";
 
 export var firebaseConfig = {
@@ -11,8 +12,15 @@ export var firebaseConfig = {
   storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
   messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
 var firebaseApp = firebase.initializeApp(firebaseConfig);
+
+export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+
+export function startAnalytics() {
+	return firebase.analytics();
+}
 
 export default firebaseApp;

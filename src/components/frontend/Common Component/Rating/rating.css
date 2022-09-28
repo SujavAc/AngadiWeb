@@ -1,0 +1,35 @@
+.Rating-component{
+    width: 100%;
+}
+.title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.rating-star-comp{
+    display: flex;
+    flex-direction: column;
+}
+.rating-title{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.overal-rating{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.smallWidget{
+    display: flex;
+    flex-direction: row;
+}
+@media (max-width: 375px) {
+	.Rating-component{
+        width: 100%;
+        padding: "16px";
+    }
+}

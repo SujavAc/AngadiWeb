@@ -23,9 +23,13 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.primary.main,
   },
   servicesList: {
-    listStyle: "none",
     padding: 0,
+    listStyle: "none",
     listStyleType: "none",
+    "&>li":{
+      paddingTop: theme.spacing(2),
+      paddingBottom: theme.spacing(1),
+    }
   },
   servicesItem: {
     textDecoration: "none",
@@ -59,6 +63,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 function Footer() {
   const classes = useStyles();
+  const getYear = () =>{
+		const d = new Date();
+		const year = d.getFullYear();
+		return year;
+	}
   return (
     <footer className={classes.root}>
       <Grid container>
@@ -70,11 +79,21 @@ function Footer() {
           justify="center"
         >
           <Grid item>
-            <div className={classes.services}>Customer Services</div>
+            <div className={classes.services}>Useful Links</div>
             <ul className={classes.servicesList}>
               <li>
                 <Link className={classes.servicesItem} to="/aboutus">
                   About Us
+                </Link>{" "}
+              </li>
+              <li>
+                <Link className={classes.servicesItem} to="/contactus">
+                  Contact Us
+                </Link>{" "}
+              </li>
+              <li>
+                <Link className={classes.servicesItem} to="/faqs">
+                  FAQ's
                 </Link>{" "}
               </li>
               <li>
@@ -96,7 +115,7 @@ function Footer() {
                 </Link>{" "}
               </li>
             </ul>
-            <div className={classes.services}>Download App</div>
+            {/* <div className={classes.services}>Download App</div>
             <a
               href={configs.contactInfo.androidAppLink}
               target="_blank"
@@ -115,7 +134,7 @@ function Footer() {
               rel="noopener noreferrer"
             >
               <img src="/imgs/ios_store.png" alt="Download app from appstore" />
-            </a>
+            </a> */}
           </Grid>
         </Grid>
         <Grid
@@ -161,7 +180,7 @@ function Footer() {
       <Grid container justify="center" alignItems="center">
         <Grid item>
           <span className={classes.copyright}>
-            &#169; 2021, {configs.title}, All Rights Reserved
+            &#169; {getYear()}, {configs.title}, All Rights Reserved
           </span>
         </Grid>
       </Grid>

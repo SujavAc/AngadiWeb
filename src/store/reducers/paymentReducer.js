@@ -19,15 +19,15 @@ const paymentReducer = (state = initstate, action) => {
         order_id: "",
         status: false,
       };
-    case "TRANS_VERIFIED":
-      return {
-        ...state,
-        order_id: "",
-        status: false,
-        msg: "SUCCESS",
-      };
+    // case "TRANS_VERIFIED":
+    //   return {
+    //     ...state,
+    //     order_id: "",
+    //     status: false,
+    //     msg: "SUCCESS",
+    //   };
     case "TRANS_NOT_VERIFIED":
-      console.log(action.err.msg);
+      // console.log(action.err.msg);
       return {
         ...state,
         msg: "TRANS_NOT_VERFIED",

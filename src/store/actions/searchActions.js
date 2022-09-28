@@ -46,3 +46,9 @@ export const search = (query) => (dispatch, getState) => {
     console.log(err);
   }
 };
+
+export const addSelectedValues = (data) => {
+  return (dispatch, getState) => {
+    dispatch({ type: "ADDED_SELECTED_VALUE", payload: data });
+  };
+}

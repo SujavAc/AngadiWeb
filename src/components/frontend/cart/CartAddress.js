@@ -52,7 +52,9 @@ const picodeSelect = [{ id: 0, title: "None" }];
 
 const initialFValues = {
   main: "",
-  pincode: "",
+  name: "",
+  // pincode: "",
+  email:"",
   phoneNum: "",
 };
 
@@ -70,49 +72,52 @@ function CartAddress(props) {
 
   const proceedPayment = (profile) => {
     return (
-      profile.delivery !== "" && profile.pincode !== "" && profile.pNum !== ""
+      profile.delivery !== "" && profile.email !== "" && profile.pNum !== ""
     );
   };
 
   useEffect(() => {
     setValues({
       main: props.profile.delivery ? props.profile.delivery : "",
-      pincode: props.profile.pincode
-        ? getPincodeIndex(props.profile.pincode)
-        : "",
+      name: props.profile.name ? props.profile.name : "",
+      email: props.profile.email ? props.profile.email : "",
       phoneNum: props.profile.pNum ? props.profile.pNum : "",
     });
   }, [props.profile]);
 
-  const getPincodeIndex = (pincode) => {
-    if (props.locations) {
-      var locations = props.locations[0].locations.split(",");
-      var idx = locations.findIndex((e) => e === pincode);
-      return idx + 1;
-    } else return 0;
-  };
+  // const getPincodeIndex = (pincode) => {
+  //   if (props.locations) {
+  //     var locations = props.locations[0].locations.split(",");
+  //     var idx = locations.findIndex((e) => e === pincode);
+  //     return idx + 1;
+  //   } else return 0;
+  // };
 
-  const getPincodes = () => {
-    if (props.locations) {
-      var locations = props.locations[0].locations.split(",");
-      var res = [{ id: 0, title: "None" }];
-      locations.forEach((location, idx) => {
-        res.push({ id: idx + 1, title: location });
-      });
-      return res;
-    } else {
-      return picodeSelect;
-    }
-  };
+  // const getPincodes = () => {
+  //   if (props.locations) {
+  //     var locations = props.locations[0].locations.split(",");
+  //     var res = [{ id: 0, title: "None" }];
+  //     locations.forEach((location, idx) => {
+  //       res.push({ id: idx + 1, title: location });
+  //     });
+  //     return res;
+  //   } else {
+  //     return picodeSelect;
+  //   }
+  // };
 
   const validate = (fieldValues = values) => {
     let tmp = { ...errors };
     if ("main" in fieldValues)
       tmp.main = fieldValues.main ? "" : "Address is required.";
-    if ("pincode" in fieldValues)
-      tmp.pincode = fieldValues.pincode
-        ? ""
-        : "We can't deliver to your area if your pincode is not in the list.";
+      if ("name" in fieldValues)
+      tmp.name = fieldValues.name ? "" : "Name is required.";
+      if ("email" in fieldValues)
+      tmp.email = fieldValues.email ? "" : "Email is required.";
+    // if ("pincode" in fieldValues)
+    //   tmp.pincode = fieldValues.pincode
+    //     ? ""
+    //     : "We can't deliver to your area if your pincode is not in the list.";
     if ("phoneNum" in fieldValues)
       tmp.phoneNum =
         fieldValues.phoneNum &&
@@ -135,12 +140,10 @@ function CartAddress(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      var locations = props.locations[0].locations.split(",");
-      var pincode = locations[values.pincode - 1];
+      // var locations = props.locations[0].locations.split(",");
+      // var pincode = locations[values.pincode - 1];
       props.updateUserInfo(props.auth.uid, {
         ...values,
-        pincode: pincode,
-        name: props.profile.name,
       });
       setOpen(false);
     }
@@ -168,7 +171,7 @@ function CartAddress(props) {
               </span>{" "}
               <br />
               <span className={classes.noWrap}>
-                {props.profile.pNum ? "91 + " + props.profile.pNum : ""}
+                {props.profile.pNum ? props.profile.pNum : ""}
               </span>
             </span>
           </div>
@@ -187,6 +190,20 @@ function CartAddress(props) {
       <Drawer anchor="right" open={open} onClose={closeDrawer}>
         <div className={classes.drawer}>
           <Form onSubmit={handleSubmit}>
+          <Controls.Input
+              name="name"
+              label="Name"
+              value={values.name}
+              onChange={handleInputChange}
+              error={errors.name}
+            />
+          <Controls.Input
+              name="email"
+              label="Email"
+              value={values.email}
+              onChange={handleInputChange}
+              error={errors.email}
+            />
             <Controls.InputArea
               name="main"
               label="Delivery Address"
@@ -195,14 +212,14 @@ function CartAddress(props) {
               error={errors.main}
               rowsMax={5}
             />
-            <Controls.Select
+            {/* <Controls.Select
               name="pincode"
               label="Pincode"
               value={values.pincode}
               onChange={handleInputChange}
-              options={getPincodes()}
+              // options={getPincodes()}
               error={errors.pincode}
-            />
+            /> */}
             <Controls.Input
               name="phoneNum"
               type="tel"

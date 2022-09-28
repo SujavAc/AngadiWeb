@@ -25,12 +25,13 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Clear from "@material-ui/icons/Clear";
 import IconButton from "@material-ui/core/IconButton";
+import MarkdownEditor from "rich-markdown-editor";
 
 const taxSelect = getTaxSelect();
 
 const initialFValues = {
   title: "",
-  description: "",
+  // description: "",
   category: 0,
   unitSelect: 0,
   price: 0,
@@ -42,6 +43,15 @@ const initialFValues = {
   visibility: true,
   special: false,
   taxes: [],
+
+  brand:"",
+  dropShip: false,
+  currency:"",
+  dropshipingSite: "",
+  imageUrls: [],
+  material: "",
+  status: "",
+  weight: "",
 };
 
 const deSerializeItems = (units) => {
@@ -58,6 +68,7 @@ const deSerializeItems = (units) => {
 
 function AddProductForm(props) {
   const [sanckbarStatus, setSnackbarStatus] = useState(props.productStatus);
+  // const [description, setDescription] = useState('');
 
   useEffect(() => {
     setSnackbarStatus(props.productStatus);
@@ -83,9 +94,23 @@ function AddProductForm(props) {
   };
 
   const validate = (fieldValues = values) => {
+    
     let tmp = { ...errors };
     if ("title" in fieldValues)
       tmp.title = fieldValues.title ? "" : "This field is required.";
+    if ("brand" in fieldValues)
+    tmp.brand = fieldValues.brand ? "" : "This field is required.";
+    if ("currency" in fieldValues)
+    tmp.currency = fieldValues.currency ? "" : "This field is required.";
+    if ("dropshipingSite" in fieldValues && values.dropShip)
+    tmp.dropshipingSite = fieldValues.dropshipingSite ? "" : "This field is required.";
+    if ("material" in fieldValues)
+    tmp.material = fieldValues.material ? "" : "This field is required.";
+    if ("status" in fieldValues)
+    tmp.status = fieldValues.status ? "" : "This field is required.";
+    if ("weight" in fieldValues)
+    tmp.weight = fieldValues.weight ? "" : "This field is required.";
+    
     if ("title" in fieldValues)
       tmp.title =
         fieldValues.title.includes(",") ||
@@ -93,10 +118,10 @@ function AddProductForm(props) {
         fieldValues.title.includes("|")
           ? "', | ;' these characters are not allowed in the title"
           : "";
-    if ("description" in fieldValues)
-      tmp.description = fieldValues.description
-        ? ""
-        : "This field is required.";
+    // if ("description" in fieldValues)
+    //   tmp.description = fieldValues.description
+    //     ? ""
+    //     : "This field is required.";
     if ("category" in fieldValues)
       tmp.category = fieldValues.category
         ? ""
@@ -142,9 +167,7 @@ function AddProductForm(props) {
   const calculateTotal = (price, discountPercentage, taxes) => {
     var totalPrice = price;
     for (var taxe in taxes) {
-      console.log(taxes[taxe]);
       var taxValue = parseFloat(taxes[taxe].value, 10);
-      console.log(taxValue);
       if (taxes[taxe].select === 0) {
         totalPrice += price * (taxValue / 100);
       } else {
@@ -181,7 +204,7 @@ function AddProductForm(props) {
       props.disableSubmit();
       var res = {
         ...values,
-        totalPrice: totalPrice,
+        discountPrice: totalPrice,
         price: price,
         taxedPrice: taxedPrice,
         discount: discount,
@@ -197,7 +220,7 @@ function AddProductForm(props) {
         ...values,
         taxes: [],
       });
-
+      // console.log(res);
       props.createProduct(res);
       resetForm();
     }
@@ -209,13 +232,24 @@ function AddProductForm(props) {
       for (var i = 0; i < props.categories.length; i++) {
         selectCategories.push({
           id: props.categories[i].id,
-          title: props.categories[i].title,
+          title: props.categories[i].name,
         });
       }
     }
     return selectCategories;
   };
 
+  const productStatus = [
+    {id:'', title:''},
+    {id:'promotion', title:'Promotion'},
+    {id:'affiliate', title:'Affiliate'},
+    {id:'comingSoon', title:'Coming Soon'},
+    {id:'trending', title:'Trending Product'},
+    {id:'clearence', title:'Clearance Product'},
+    {id:'newArraival', title:'New Arraival'},
+    {id:'priceDrop', title:'Sale'},
+
+  ]
   const getUnits = () => {
     const selectUnits = [{ id: 0, title: "None" }];
     if (props.categories && values.category !== 0) {
@@ -314,6 +348,15 @@ function AddProductForm(props) {
               onChange={handleSwitchChange}
               color="primary"
             />
+            
+              <Controls.Switch
+              name="dropShip"
+              label="Dropshipping"
+              value={values.dropShip}
+              onChange={handleSwitchChange}
+              color="primary"
+            />
+            
             <Controls.Switch
               name="special"
               label="Special Offer"
@@ -328,14 +371,32 @@ function AddProductForm(props) {
               onChange={handleInputChange}
               error={errors.title}
             />
-            <Controls.InputArea
+            {/* <Controls.InputArea
               name="description"
               label="Description"
               value={values.description}
               onChange={handleInputChange}
               error={errors.description}
               rowsMax={5}
-            />
+            />  */}
+            {/* <MarkdownEditor
+                                    defaultValue={values.description}
+                                     onChange={(getValue) => {
+                                         setDescription(getValue());
+                                     }}
+                                    onShowToast={(message) => toast(message)}
+                                 /> */}
+
+            {values.dropShip && (
+              <Controls.InputArea
+                name="dropshipingSite"
+                label="Drop Shipping Site"
+                value={values.dropshipingSite}
+                onChange={handleInputChange}
+                error={errors.dropshipingSite}
+                rowsMax={2}
+              />
+            )}
             <Controls.Select
               name="category"
               label="Category"
@@ -343,6 +404,14 @@ function AddProductForm(props) {
               onChange={handleInputChange}
               options={getCategories()}
               error={errors.category}
+            />
+            <Controls.Select
+              name="status"
+              label="Status"
+              value={values.status}
+              onChange={handleInputChange}
+              options={productStatus}
+              error={errors.status}
             />
             <Controls.ImageView
               alt="Product uploaded"
@@ -382,6 +451,47 @@ function AddProductForm(props) {
                   onChange={handleInputChange}
                   error={errors.discount}
                 />
+                
+              </Grid>
+              <Grid xs={6} item>
+                <Controls.Input
+                  name="brand"
+                  label="Brand"
+                  value={values.brand}
+                  onChange={handleInputChange}
+                  error={errors.brand}
+                />
+                
+              </Grid>
+              <Grid xs={6} item>
+                <Controls.Input
+                  name="currency"
+                  label="Currency"
+                  value={values.currency}
+                  onChange={handleInputChange}
+                  error={errors.currency}
+                />
+                
+              </Grid>
+              <Grid xs={6} item>
+                <Controls.Input
+                  name="material"
+                  label="Material"
+                  value={values.material}
+                  onChange={handleInputChange}
+                  error={errors.material}
+                />
+                
+              </Grid>
+              <Grid xs={6} item>
+                <Controls.Input
+                  name="weight"
+                  label="Weight"
+                  value={values.weight}
+                  onChange={handleInputChange}
+                  error={errors.weight}
+                />
+                
               </Grid>
               <Grid xs={12} item container>
                 <Grid xs={12} item>
@@ -415,7 +525,7 @@ function AddProductForm(props) {
                             <TableCell align="center">
                               {" "}
                               {tax.value}
-                              {tax.select === 0 ? "%" : "₹"}{" "}
+                              {tax.select === 0 ? "%" : "AUD"}{" "}
                             </TableCell>
                             <TableCell align="center">
                               <IconButton
@@ -468,12 +578,12 @@ function AddProductForm(props) {
           </Grid>
           <Grid xs={12} item container alignItems="center">
             <Grid item>
-              <UploadImageButton callbackSave={imageSave} />
+              <UploadImageButton callbackSave={imageSave} filesLimit={2}/>
             </Grid>
             <Grid item>
               <div>
                 <Controls.Button
-                  disabled={sanckbarStatus.disableSubmit}
+                  disabled={sanckbarStatus?.disableSubmit}
                   type="submit"
                   text="Submit"
                 />
@@ -482,7 +592,7 @@ function AddProductForm(props) {
             <Grid item>
               <CircularProgress
                 size={30}
-                style={!sanckbarStatus.disableSubmit && { display: "none" }}
+                style={!sanckbarStatus?.disableSubmit && { display: "none" }}
               />
             </Grid>
           </Grid>
@@ -490,13 +600,13 @@ function AddProductForm(props) {
       </Form>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={sanckbarStatus.snackbarStatus}
+        open={sanckbarStatus?.snackbarStatus}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
         key={"topright"}
       >
-        <Alert onClose={handleSnackbarClose} severity={sanckbarStatus.variant}>
-          {sanckbarStatus.message}
+        <Alert onClose={handleSnackbarClose} severity={sanckbarStatus?.variant}>
+          {sanckbarStatus?.message}
         </Alert>
       </Snackbar>
     </>
@@ -504,10 +614,10 @@ function AddProductForm(props) {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     categories: state.firestore.ordered.categories,
     productStatus: state.product,
+    noOfProduct: state.firestore.ordered.products,
   };
 };
 
@@ -524,6 +634,6 @@ export default compose(
   firestoreConnect([
     {
       collection: "categories",
-    },
+    }
   ])
 )(AddProductForm);

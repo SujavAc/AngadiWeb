@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 function ComboManagement() {
   const classes = useStyles();
   return (
-    <div className={classes.divAlign}>
+    <div>
       <PageHeader
         title={"Combo and Offers Management"}
         icon={<LocalOfferIcon fontSize="large" />}

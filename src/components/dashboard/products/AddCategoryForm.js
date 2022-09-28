@@ -15,7 +15,7 @@ import Alert from "@material-ui/lab/Alert";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
 const initialFValues = {
-  title: "",
+  name: "",
   imageData: "",
   bannerImageData: "",
   description: "",
@@ -34,8 +34,8 @@ function AddCategoryForm(props) {
 
   const validate = (fieldValues = values) => {
     let tmp = { ...errors };
-    if ("title" in fieldValues)
-      tmp.title = fieldValues.title ? "" : "This field is required.";
+    if ("name" in fieldValues)
+      tmp.name = fieldValues.name ? "" : "This field is required.";
     if ("description" in fieldValues)
       tmp.description = fieldValues.description
         ? ""
@@ -111,11 +111,11 @@ function AddCategoryForm(props) {
           </Grid>
           <Grid xs={12} item>
             <Controls.Input
-              name="title"
-              label="Title"
-              value={values.title || ""}
+              name="name"
+              label="Name"
+              value={values.name || ""}
               onChange={handleInputChange}
-              error={errors.title}
+              error={errors.name}
             />
           </Grid>
           <Grid xs={12} item>
@@ -148,7 +148,7 @@ function AddCategoryForm(props) {
                   ? "/imgs/1000x200.png"
                   : values.bannerImageData
               }
-              width={500}
+              width={350}
               height={100}
               error={errors.bannerImageData}
             />
@@ -167,7 +167,7 @@ function AddCategoryForm(props) {
           </Grid>
           <Grid item>
             <Controls.Button
-              disabled={sanckbarStatus.disableSubmit}
+              disabled={sanckbarStatus?.disableSubmit}
               type="submit"
               text="Submit"
             />
@@ -175,20 +175,20 @@ function AddCategoryForm(props) {
           <Grid item>
             <CircularProgress
               size={30}
-              style={!sanckbarStatus.disableSubmit && { display: "none" }}
+              style={!sanckbarStatus?.disableSubmit && { display: "none" }}
             />
           </Grid>
         </Grid>
       </Form>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={sanckbarStatus.snackbarStatus}
+        open={sanckbarStatus?.snackbarStatus}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
         key={"topright"}
       >
-        <Alert onClose={handleSnackbarClose} severity={sanckbarStatus.variant}>
-          {sanckbarStatus.message}
+        <Alert onClose={handleSnackbarClose} severity={sanckbarStatus?.variant}>
+          {sanckbarStatus?.message}
         </Alert>
       </Snackbar>
     </>
@@ -196,7 +196,6 @@ function AddCategoryForm(props) {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     categoryStatus: state.category,
   };

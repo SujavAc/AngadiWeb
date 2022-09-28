@@ -21,6 +21,7 @@ export default function InputArea(props) {
       multiline
       rowsMax={rowsMax}
       rows={rowsMax}
+      fullWidth
       InputLabelProps={{ shrink: true }}
       {...(error && { error: true, helperText: error })}
       {...rest}

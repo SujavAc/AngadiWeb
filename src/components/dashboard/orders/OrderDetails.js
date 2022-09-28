@@ -2,6 +2,7 @@ import React from "react";
 import { makeStyles, Grid, Typography, Divider } from "@material-ui/core";
 import ProductSummary from "./ProductSummary";
 import ActionButton from "./actionButton";
+import { ConvertDate, ConvertTime } from "../../utils/ConvertDate";
 
 import {
   cancelOrder,
@@ -60,20 +61,20 @@ const getItems = (cart) => {
 };
 
 const getItemsCount = (cart) => {
-  return cart.split(",").length;
+  return cart.split("|").length;
 };
 
-const getTime = (time) => {
-  var date = new Date(time.toDate().toString());
-  return date.toLocaleTimeString("en-IN");
-};
+// const getTime = (time) => {
+//   var date = new Date(time.toDate().toString());
+//   return date.toLocaleTimeString("en-IN");
+// };
 
-const getDate = (time) => {
-  var date = new Date(time.toDate().toString());
-  return (
-    date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
-  );
-};
+// const getDate = (time) => {
+//   var date = new Date(time.toDate().toString());
+//   return (
+//     date.getDate() + "-" + (date.getMonth() + 1) + "-" + date.getFullYear()
+//   );
+// };
 
 function OrderDetails(props) {
   const classes = useStyles();
@@ -86,7 +87,7 @@ function OrderDetails(props) {
     props.deliveredOrder(props.order.id);
   };
 
-  if (!props.order.time) {
+  if (!props.order.createdAt) {
     return <div className={classes.root}></div>;
   }
 
@@ -94,29 +95,29 @@ function OrderDetails(props) {
     <div className={classes.root}>
       <div className={classes.metadata}>
         <Grid container>
-          <Grid item xs={6}>
-            <Grid item container justify="center">
+          <Grid item xs={12}>
+            {/* <Grid item container justify="center"> */}
               <Grid item>
                 <Typography component="p">
                   <b>Order Id:</b> {props.order.id}
                 </Typography>
                 <Typography component="p">
-                  <b>Payment Id:</b> {props.order.payment_id}
+                  <b>Payment Id:</b> {props.order.token.token ? props.order.token.token.id : props.order.token.id}
                 </Typography>
               </Grid>
-            </Grid>
+            {/* </Grid> */}
           </Grid>
-          <Grid item xs={6}>
-            <Grid item container justify="center">
+          <Grid item xs={12}>
+            {/* <Grid item container justify="center"> */}
               <Grid item>
                 <Typography component="p">
-                  <b>Date:</b> {getDate(props.order.time)}
+                  <b>Date:</b> {ConvertDate(props.order.createdAt)}
                 </Typography>
                 <Typography component="p">
-                  <b>Time:</b> {getTime(props.order.time)}
+                  <b>Time:</b> {ConvertTime(props.order.createdAt)}
                 </Typography>
               </Grid>
-            </Grid>
+            {/* </Grid> */}
           </Grid>
         </Grid>
       </div>
@@ -136,7 +137,7 @@ function OrderDetails(props) {
                   <b>Pincode: </b> {props.order.pincode}
                 </Typography>
                 <Typography component="p">
-                  <b>Address: </b> {props.order.address}
+                  <b>Address: </b> {props.order.delivery}
                 </Typography>
               </Grid>
             </Grid>
@@ -145,7 +146,7 @@ function OrderDetails(props) {
             <Grid item container justify="center">
               <Grid item>
                 <Typography component="p">
-                  <b>Item Count: </b> {getItemsCount(props.order.cart)}
+                  {/* <b>Item Count: </b> {getItemsCount(props.order.order_data)} */}
                 </Typography>
                 <Typography component="p">
                   <b>Total Price: </b> {props.order.amount}
@@ -201,10 +202,10 @@ function OrderDetails(props) {
             <div className={classes.delivered}>Delivered</div>
           )}
       </div>
-      {getItemsCount(props.order.cart) > 0 &&
-        getItems(props.order.cart).map((product) => (
+      {/* {getItemsCount(props.order.order_data) > 0 &&
+        getItems(props.order.order_data).map((product) => (
           <ProductSummary key={product.productId} product={product} />
-        ))}
+        ))} */}
     </div>
   );
 }

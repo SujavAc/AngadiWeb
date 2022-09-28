@@ -160,7 +160,7 @@ function ProductHCard(props) {
             >
               <img
                 className={classes.img}
-                src={props.item ? props.item.imageURL : "/imgs/default.jpg"}
+                src={props.item ? props.item.imageUrl : "/imgs/default.jpg"}
                 alt={props.item ? props.item.title : "Product Image"}
               />
             </Link>
@@ -175,17 +175,17 @@ function ProductHCard(props) {
               </Link>
               <div className={classes.priceBox}>
                 <span className={classes.aprice}>
-                  {"₹ " + props.item.totalPrice}
+                  {"AUD " + props.item.discountPrice}
                 </span>
                 <span> </span>
                 <span className={classes.dprice}>
-                  {"₹ " + props.item.taxedPrice}
+                  {"AUD " + props.item.price}
                 </span>
 
                 <span className={classes.variant}>{props.item.unit}</span>
                 {props.item.discount > 0 && (
                   <span className={classes.save}>
-                    save ₹ {props.item.taxedPrice - props.item.totalPrice}
+                    save AUD {props.item.price - props.item.discountPrice}
                   </span>
                 )}
                 {props.item.discount === 0 && (
@@ -194,7 +194,7 @@ function ProductHCard(props) {
               </div>
               <div className={classes.quanDiv}>
                 <div className={classes.quanPrice}>
-                  ₹ {count * props.item.totalPrice}{" "}
+                  AUD {count * props.item.discountPrice}{" "}
                 </div>
 
                 <div className={classes.change}>

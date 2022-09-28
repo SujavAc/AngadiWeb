@@ -62,7 +62,7 @@ function CategoriesBox(props) {
         {scat &&
           scat.map((cat, idx) => (
             <div key={idx} className={classes.list}>
-              <Link to={"/category/" + cat.id}>{cat.title}</Link>
+              <Link to={"/category/" + cat.id}>{cat.name}</Link>
             </div>
           ))}
       </div>

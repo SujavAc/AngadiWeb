@@ -111,7 +111,7 @@ function CategorySwiper(props) {
         />
       )}
 
-      {props.categories && (
+      {props.categories.length && (
         <Swiper
           className={classes.swiperRoot}
           slidesPerView={"auto"}
@@ -121,8 +121,8 @@ function CategorySwiper(props) {
           {props.categories.map((cate) => (
             <SwiperSlide key={cate.id}>
               <CategoryHomePaper
-                title={cate.title}
-                url={cate.imageURL}
+                title={cate.name}
+                url={cate.imageUrl}
                 categoryId={cate.id}
               />
             </SwiperSlide>

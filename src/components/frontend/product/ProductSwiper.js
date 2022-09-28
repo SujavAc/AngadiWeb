@@ -65,13 +65,16 @@ const useStyles = makeStyles((theme) => ({
     "& .swiper-slide": {
       width: "auto",
       marginRight: 10,
+      color: theme.palette.primary.main
     },
     clear: "both",
   },
   spacer: {
     marginTop: theme.spacing(3),
+    marginRight: theme.spacing(1),
     [theme.breakpoints.down("sm")]: {
       marginTop: theme.spacing(2),
+      marginRight: theme.spacing(1),
     },
   },
   float: {
@@ -81,11 +84,17 @@ const useStyles = makeStyles((theme) => ({
 
 function ProductSwiper(props) {
   const classes = useStyles();
-  const { title } = props;
+  const { title, products } = props;
+  const pagination = {
+    clickable: true,
+    renderBullet: function (index, className) {
+      return '<span class="' + className + '">' + (index + 1) + "</span>";
+    },
+  };
 
   useEffect(() => {
     props.loadSpecials(20);
-  }, []);
+  },[props.special]);
 
   return (
     <div className={classes.white}>
@@ -93,34 +102,52 @@ function ProductSwiper(props) {
       <Button component={Link} to="/deals" className={classes.viewall}>
         View All
       </Button>
-
+      <div>
       {!props.special.length && (
-        <Skeleton
+        <Swiper
+        className={classes.root}
+        slidesPerView={"auto"}
+        navigation
+        height={300}
+      >
+        {Array.from(new Array(6)).map((value,index)=>{
+          return <SwiperSlide key={index}>
+          <Skeleton
+          key={index}
           variant="rect"
-          height={280}
-          width={180}
+          height={200}
+          width={170}
           className={classes.spacer}
         />
+        </SwiperSlide>
+      
+    
+        })}
+      </Swiper>
       )}
+      </div>
 
-      {props.special && (
+      {props.special.length && (
         <Swiper
           className={classes.root}
-          slidesPerView={"auto"}
-          navigation
-          height={300}
+          // pagination={pagination}
+          // modules={[Pagination]}
+          slidesPerView="auto"
         >
-          {props.special.map((productData) => {
+          {props.special && props.special.map((productData) => {
             if (productData.visibility) {
               return (
                 <SwiperSlide key={productData.id}>
                   <ProductCard productData={productData} />
                 </SwiperSlide>
+                
               );
             }
           })}
         </Swiper>
       )}
+      
+      
     </div>
   );
 }

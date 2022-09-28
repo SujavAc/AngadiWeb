@@ -80,7 +80,6 @@ const headCells = [
   { id: "unitValue", label: "Quantity", disableSorting: true },
   { id: "imageData", label: "Image", disableSorting: true },
   { id: "edit", label: "Edit", disableSorting: true },
-  { id: "delete", label: "Delete", disableSorting: true },
 ];
 
 function Management(props) {
@@ -133,7 +132,7 @@ function Management(props) {
       for (var i = 0; i < props.categories.length; i++) {
         selectCategories.push({
           id: props.categories[i].id,
-          title: props.categories[i].title,
+          title: props.categories[i].name,
         });
       }
     }
@@ -166,7 +165,7 @@ function Management(props) {
   };
 
   return (
-    <div className={classes.divAlign}>
+    <div>
       <PageHeader
         title={"Product Management"}
         icon={<Store fontSize="large" />}
@@ -200,10 +199,10 @@ function Management(props) {
               <TableRow key={item.id}>
                 <TableCell>{item.title} </TableCell>
                 <TableCell>{getCategoryTitle(item.category)} </TableCell>
-                <TableCell>{item.totalPrice} </TableCell>
+                <TableCell>{item.discountPrice} </TableCell>
                 <TableCell>
                   <Typography
-                    variant="p"
+                    component="p"
                     className={
                       item.visibility ? classes.visible : classes.notVisible
                     }
@@ -214,7 +213,7 @@ function Management(props) {
                 </TableCell>
                 <TableCell>{item.unit} </TableCell>
                 <TableCell>
-                  <img width={"100px"} alt={item.title} src={item.imageURL} />
+                  <img width={"100px"} alt={item.title} src={item.imageUrl} />
                 </TableCell>
                 <TableCell>
                   <>
@@ -232,14 +231,18 @@ function Management(props) {
                         handleUpdateImage(filesObj, update, item)
                       }
                     />
+                    <DeleteIconDialog
+                    alertText={"Are you sure to delete this product?"}
+                    callbackDelete={() => handleDeleteProduct(item)}
+                  />
                   </>
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   <DeleteIconDialog
                     alertText={"Are you sure to delete this product?"}
                     callbackDelete={() => handleDeleteProduct(item)}
                   />
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             ))}
           </TableBody>
@@ -248,13 +251,13 @@ function Management(props) {
       </Paper>
       <Snackbar
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={sanckbarStatus.snackbarStatus}
+        open={sanckbarStatus?.snackbarStatus}
         autoHideDuration={6000}
         onClose={handleSnackbarClose}
         key={"topright"}
       >
-        <Alert onClose={handleSnackbarClose} severity={sanckbarStatus.variant}>
-          {sanckbarStatus.message}
+        <Alert onClose={handleSnackbarClose} severity={sanckbarStatus?.variant}>
+          {sanckbarStatus?.message}
         </Alert>
       </Snackbar>
     </div>
@@ -262,7 +265,6 @@ function Management(props) {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     products: state.firestore.ordered.products,
     categories: state.firestore.ordered.categories,
